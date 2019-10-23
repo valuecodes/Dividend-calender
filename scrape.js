@@ -75,11 +75,14 @@ function requestData(ticker){
 // Constructor
 function dataToConstructor(data,ticker){
     class company{
-        constructor(name,month, day){
+        constructor(name,month,monthNum,day){
             this.name = name;
             this.month=[
                 month
                 ]
+            this.monthNum=[
+                monthNum
+            ]
             this.day=[
                 day
             ]
@@ -89,12 +92,67 @@ function dataToConstructor(data,ticker){
     if(data==null){
         return ticker;
     }
-    let company1 = new company(ticker,data[0][0],data[0][1]);
+
+    let monthNumber=[]
+
+    for(var i=0;i<data.length;i++){
+        monthNumber[i]=toMonth(data[i][0])
+    }
+
+    let company1 = new company(ticker,data[0][0],monthNumber[0],data[0][1]);
     for(var i=1;i<data.length;i++){
         company1.month.push(data[i][0]);
-        company1.day.push(data[i][1]);
+        company1.monthNum.push(monthNumber[i]);
+        company1.day.push(data[i][1]);  
+
     }
     return company1;
+}
+
+// Turn month to num
+function toMonth(month){
+    let num;
+    switch(month){
+        case 'Jan':
+            num=0;
+            break;
+        case 'Feb':
+            num=1;
+            break;
+        case 'Mar':
+            num=2;
+            break;
+        case 'Apr':
+            num=3;
+            break;
+        case 'May':
+            num=4;
+            break;
+        case 'Jun':
+            num=5;
+            break;
+        case 'Jul':
+            num=6;
+            break;
+        case 'Aug':
+            num=7;
+            break;
+        case 'Sep':
+            num=8;
+            break;
+        case 'Oct':
+            num=9;
+            break;
+        case 'Nov':
+            num=10;
+            break;
+        case 'Dec':
+            num=11;
+            break;
+        default:
+            num=NaN;
+    }
+    return num;
 }
 
 // Clean data
