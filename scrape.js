@@ -106,6 +106,9 @@ function cleanData(data){
             //    console.log(word);
                break;
            }
+           if(data[i]==','){
+               continue;
+           }
 
            if(word=="Dividend"){
                word="";
@@ -124,8 +127,8 @@ function cleanData(data){
         let count=0;
         for(var i=0;i<array.length;i=i+3){
             divDates[count]=[array[i],array[i+1],array[i+2].substring(0,4),array[i+2].substring(4)];
-            // console.log(array[i]+' '+array[i+1]+' '+array[i+2].substring(0,4)+' '+array[i+2].substring(4)
-            // );
+            console.log(array[i]+' '+array[i+1]+' '+array[i+2].substring(0,4)+' '+array[i+2].substring(4)
+            );
             count++;
         }
 
