@@ -13,9 +13,23 @@
     margin-left: auto;
     margin-right: auto;
     display: grid;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 10fr 1fr;
 }
 
 /* Data */
 
 /* Months */
+.months{
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    border: 3px solid;
+    text-align: center;
+}
+
+.months h3{
+    font-size: 30px;
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    border: 3px solid;
+}
