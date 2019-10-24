@@ -41,23 +41,32 @@ function myFunction1(xhttp) {
         // newDiv.appendChild(text);
     }
     
-    let ticker=data[13];
-    console.log(ticker);
+    let ticker=data[1];
+    createDivDates(ticker);
+    
 
-    console.log(data[i]);
+}
+
+function createDivDates(ticker){
     for(var i=0;i<ticker.month.length;i++){
         let text=document.createTextNode(ticker.name);
         let selectedMonth=document.getElementById('month'+ticker.monthNum[i]);
         selectedMonth.appendChild(text);
         // console.log(ticker.monthNum[i]);
     }
-
 }
 
 
 // Auto complete
 
 function autocomplete(inp, arr) {
+
+    document.getElementById('button').addEventListener('click',helloworld);
+
+    function helloworld(){
+      console.log(document.getElementById('myInput').textContent)
+    }
+
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
     var currentFocus;
@@ -150,14 +159,10 @@ function autocomplete(inp, arr) {
 
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
-    //   closeAllLists(e.target);
+    console.log(e.target.textContent);
+      closeAllLists(e.target);
   });
   }
 }
 
 
-document.getElementById("button").addEventListener("click", myFunction);
-
-function myFunction() {
-  console.log(1);
-}
