@@ -1,15 +1,15 @@
 
 /* Header */
 .header{
-    background-color: aliceblue;
+    background-color:  rgb(156, 190, 179);
     text-align: center;
 }
 
 /* Calender */
 .calender{
     width:90%;
-    height: 600px;
-    background-color: aquamarine;
+    height: 300px;
+    background-color: rgb(186, 228, 214);
     margin-left: auto;
     margin-right: auto;
     display: grid;
@@ -32,4 +32,71 @@
     padding: 0px;
     height: 100%;
     border: 3px solid;
+}
+
+/* Data */
+.data{
+    display: grid;
+    grid-template-columns: repeat(12,1fr);
+    text-align: center;
+    height: 100px;
+    margin-top: auto;
+}
+
+/* Month Block */
+.monthBlock{
+    font-size: 50px;
+    margin-top: 20px;
+}
+
+/* Search bar */
+* { box-sizing: border-box; }
+body {
+  font: 16px Arial;
+}
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+  margin-left: 800px;
+}
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+input[type=submit] {
+  background-color: rgb(97, 134, 172);
+  color: #fff;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: rgb(89, 140, 190) !important;
+  color: #ffffff;
 }
