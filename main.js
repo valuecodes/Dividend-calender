@@ -1,4 +1,34 @@
 let tickerList=[];
+let dividendData;
+let monthsName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+
+class monthStack{
+  constructor(name,number,count){
+    this.name = [name];
+    this.number=[number];
+    this.count = [count];
+  }
+}
+
+let monthTrack = new monthStack(monthsName[0],0,0);
+console.log(monthsName);
+for(var i=1;i<monthsName.length;i++){
+  // console.log(monthsName[i]);
+  monthTrack.name.push(monthsName[i]);
+  monthTrack.number.push(i);
+  monthTrack.count.push(0);
+}
+
+console.log(monthTrack);
+
+// Track months
+// for(var i=0;i<monthsName.length;i++){
+//   console.log(monthsName[i]);
+//   // monthStack[i][0]=monthsName[i];
+//   monthStack[i].name.push(i;      
+// }
+
+// console.log(monthStack);
 
 // Get dat from Git Hub
 loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/data.json", myFunction1);
@@ -18,8 +48,7 @@ function loadDoc(url, cFunction) {
 function myFunction1(xhttp) {
 
     let data=JSON.parse(xhttp.responseText);
-    
-
+    dividendData=data;
     for(var i=0;i<data.length;i++){
         tickerList.push(data[i].name);
     }
@@ -31,7 +60,7 @@ function myFunction1(xhttp) {
     // }
 
     // Display data
-    for(var i=0;i<12;i++){
+    for(var i=0;i<36;i++){
         let newDiv = document.createElement('div');
         newDiv.className = "monthBlock";
         newDiv.id = 'month'+i;
@@ -40,20 +69,39 @@ function myFunction1(xhttp) {
         dataSection.appendChild(newDiv);
         // newDiv.appendChild(text);
     }
+
+ 
+
+
+
+    console.log(data);
+    // let ticker=data[1];
     
-    let ticker=data[1];
-    createDivDates(ticker);
+    // createDivDates('DIS');
     
 
 }
 
-function createDivDates(ticker){
-    for(var i=0;i<ticker.month.length;i++){
-        let text=document.createTextNode(ticker.name);
-        let selectedMonth=document.getElementById('month'+ticker.monthNum[i]);
-        selectedMonth.appendChild(text);
-        // console.log(ticker.monthNum[i]);
+function createDivDates(companyName){
+
+  let ticker;
+  for(var i=0;i<dividendData.length;i++){
+    if(dividendData[i].name==companyName){
+      ticker=dividendData[i];
+      break;
     }
+    console.log(dividendData[i].name);
+  }
+
+    for(var i=0;i<ticker.month.length;i++){
+      console.log((ticker.monthNum[i]+24-(monthTrack.count[ticker.monthNum[i]]*12)));
+        let text=document.createTextNode(ticker.name);
+        let selectedMonth=document.getElementById('month'+(ticker.monthNum[i]+24-(monthTrack.count[ticker.monthNum[i]]*12)));
+        selectedMonth.appendChild(text);
+        monthTrack.count[ticker.monthNum[i]]++;
+    }
+    console.log(monthTrack);
+    ticker.isOn=1;
 }
 
 
@@ -159,10 +207,28 @@ function autocomplete(inp, arr) {
 
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
-    console.log(e.target.textContent);
+
+    let flag=checkActive(e.target.textContent);
+      
+      if(flag==false){
+        console.log(flag);
+        createDivDates(e.target.textContent);
+        flag=1;
+      }
+      
+      console.log(e.target.textContent);
       closeAllLists(e.target);
   });
   }
 }
 
-
+// check if ticker is already displayed on the chart
+function checkActive(ticker){
+  for(var i=0;i<dividendData.length;i++){
+    if(dividendData[i].name==ticker && dividendData[i].isOn == undefined){
+      return false;
+      break;
+    }
+  }
+  return true;
+}
