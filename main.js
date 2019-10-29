@@ -2,6 +2,7 @@ let tickerList=[];
 let dividendData;
 let monthsName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
+
 class monthStack{
   constructor(name,number,count){
     this.name = [name];
@@ -10,28 +11,15 @@ class monthStack{
   }
 }
 
+// create month data
 let monthTrack = new monthStack(monthsName[0],0,0);
-console.log(monthsName);
 for(var i=1;i<monthsName.length;i++){
-  // console.log(monthsName[i]);
   monthTrack.name.push(monthsName[i]);
   monthTrack.number.push(i);
   monthTrack.count.push(0);
 }
-
-console.log(monthTrack);
-
-// Track months
-// for(var i=0;i<monthsName.length;i++){
-//   console.log(monthsName[i]);
-//   // monthStack[i][0]=monthsName[i];
-//   monthStack[i].name.push(i;      
-// }
-
-// console.log(monthStack);
-
 // Get dat from Git Hub
-loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/data.json", myFunction1);
+loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/data.json", loadData);
 function loadDoc(url, cFunction) {
   var xhttp;
   xhttp=new XMLHttpRequest();
@@ -45,62 +33,65 @@ function loadDoc(url, cFunction) {
 }
 
 
-function myFunction1(xhttp) {
+function loadData(xhttp) {
 
     let data=JSON.parse(xhttp.responseText);
     dividendData=data;
     for(var i=0;i<data.length;i++){
         tickerList.push(data[i].name);
     }
-    console.log(tickerList);
 
-    // for(var i=0;i<data.length;i++){
-    //     console.log(data[i].name);
-    //     console.log(data[i].month);
-    // }
+    // Create data blocks
+    createDataBlocks();
+    // Create Month blocks
+    createMonthBlocks();
+    
+}
 
-    // Display data
-    for(var i=0;i<36;i++){
+function createDataBlocks(){
+  for(var i=0;i<36;i++){
         let newDiv = document.createElement('div');
         newDiv.className = "monthBlock";
         newDiv.id = 'month'+i;
-        // let text=document.createTextNode('X');
         let dataSection = document.getElementById('data');
         dataSection.appendChild(newDiv);
-        // newDiv.appendChild(text);
     }
+}
 
- 
-
-
-
-    console.log(data);
-    // let ticker=data[1];
-    
-    // createDivDates('DIS');
-    
-
+function createMonthBlocks(){
+  for(var i=0;i<12;i++){
+    let newDiv = document.createElement('h3');
+    newDiv.id='monthName'+i;
+    newDiv.textContent=monthTrack.name[i];
+    let dataSection = document.getElementById('monthBlocks');
+    dataSection.appendChild(newDiv);
+  }
 }
 
 function createDivDates(companyName){
-
+  // Search data
   let ticker;
   for(var i=0;i<dividendData.length;i++){
     if(dividendData[i].name==companyName){
       ticker=dividendData[i];
       break;
     }
-    console.log(dividendData[i].name);
   }
-
+  // Append data to month Blocks
     for(var i=0;i<ticker.month.length;i++){
-      console.log((ticker.monthNum[i]+24-(monthTrack.count[ticker.monthNum[i]]*12)));
         let text=document.createTextNode(ticker.name);
         let selectedMonth=document.getElementById('month'+(ticker.monthNum[i]+24-(monthTrack.count[ticker.monthNum[i]]*12)));
         selectedMonth.appendChild(text);
         monthTrack.count[ticker.monthNum[i]]++;
     }
-    console.log(monthTrack);
+    // Create colors for monthNames
+    for(var i=0;i<12;i++){ 
+      if(monthTrack.count[i]>0){
+        console.log(monthTrack.count[i]);
+        let id='monthName'+i;
+        document.getElementById(id).style.background='rgb(100, 200,'+50*monthTrack.count[i]+')';
+      }
+    }
     ticker.isOn=1;
 }
 
@@ -108,13 +99,6 @@ function createDivDates(companyName){
 // Auto complete
 
 function autocomplete(inp, arr) {
-
-    document.getElementById('button').addEventListener('click',helloworld);
-
-    function helloworld(){
-      console.log(document.getElementById('myInput').textContent)
-    }
-
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
     var currentFocus;
@@ -208,15 +192,12 @@ function autocomplete(inp, arr) {
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
 
-    let flag=checkActive(e.target.textContent);
-      
+    // create data for chart
+    let flag=checkActive(e.target.textContent);      
       if(flag==false){
-        console.log(flag);
         createDivDates(e.target.textContent);
         flag=1;
       }
-      
-      console.log(e.target.textContent);
       closeAllLists(e.target);
   });
   }
@@ -231,4 +212,24 @@ function checkActive(ticker){
     }
   }
   return true;
+}
+
+
+setInterval(function(){
+  var clock = document.getElementById('countDown');
+  clock.innerHTML = getCurrentTime();
+}, 1000);
+
+function getCurrentTime() {
+  var currentDate = new Date();
+  console.log(currentDate.getHours());
+  var hours = currentDate.getHours() < 10 ? '0' + currentDate.getSeconds() : currentDate.getHours();
+  hours === 0 ? hours = 12 : hours = hours;
+  var minutes = currentDate.getMinutes();
+  var seconds = currentDate.getSeconds() < 10 ? '0' + currentDate.getSeconds() : currentDate.getSeconds();
+  var date = currentDate.getDate();
+  var month = currentDate.getMonth(); 
+  console.log(date);
+  var currentTime ='Day '+date+' Month '+month+' Hours '+ hours + ' Min ' + minutes + ' Sec ' + seconds;
+  return currentTime;
 }

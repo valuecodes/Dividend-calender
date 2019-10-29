@@ -11,30 +11,20 @@
 <body>
     <div class="header">
         <h1 id="header">Dividend calender</h1>
-    </div>
-    <form autocomplete="off">
+    </div><h2 id="clock">Next Dividend in:</h2>
+    <form autocomplete="off" id="form">
         <div class="autocomplete" style="width:300px;">
         <input id="myInput" type="text" name="myCountry" placeholder="Country">
         </div>
         <input type="submit" id="button" >
+        
+        <div id="countDown"></div>
     </form>
     
     <div class="calender">
         <div class="data" id="data">
         </div>
-        <div class="months">
-            <h3>Jan</h3>
-            <h3>Feb</h3>
-            <h3>Mar</h3>
-            <h3>Apr</h3>
-            <h3>May</h3>
-            <h3>Jun</h3>
-            <h3>Jul</h3>
-            <h3>Aug</h3>
-            <h3>Sep</h3>
-            <h3>Oct</h3>
-            <h3>Nov</h3>
-            <h3>Dec</h3>
+        <div class="months" id="monthBlocks">
         </div>
 
     </div>

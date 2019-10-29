@@ -50,6 +50,33 @@
     /* margin-top: 20px; */
 }
 
+/* Form */
+#form{
+  display: grid;
+  grid-template-columns: 1fr 90px 1fr;
+}
+
+#form h2{
+  margin: 0px;
+  padding: 0px;
+  padding-top: 7px;
+  margin-left: 20px;
+}
+
+/* countdown */
+#countDown{
+  font-size: 35px;
+  padding-left:10px;
+}
+
+#clock{
+  padding: 0px;
+  padding-right: 508px;
+  margin: 0px;
+  text-align: right;
+}
+
+
 /* Search bar */
 * { box-sizing: border-box; }
 body {
