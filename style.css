@@ -3,6 +3,7 @@
 .header{
     background-color:  rgb(156, 190, 179);
     text-align: center;
+  
 }
 
 /* Calender */
@@ -53,7 +54,7 @@
 /* Form */
 #form{
   display: grid;
-  grid-template-columns: 1fr 90px 1fr;
+  grid-template-columns: 1fr 90px 1fr 1fr 1fr;
 }
 
 #form h2{

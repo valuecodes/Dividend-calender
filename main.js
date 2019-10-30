@@ -1,7 +1,7 @@
 let tickerList=[];
 let dividendData;
 let monthsName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
+let isEmpty=true;
 
 class monthStack{
   constructor(name,number,count){
@@ -70,13 +70,8 @@ function createMonthBlocks(){
 
 function createDivDates(companyName){
   // Search data
-  let ticker;
-  for(var i=0;i<dividendData.length;i++){
-    if(dividendData[i].name==companyName){
-      ticker=dividendData[i];
-      break;
-    }
-  }
+  let ticker = searchCompany(companyName);
+  
   // Append data to month Blocks
     for(var i=0;i<ticker.month.length;i++){
         let text=document.createTextNode(ticker.name);
@@ -87,11 +82,11 @@ function createDivDates(companyName){
     // Create colors for monthNames
     for(var i=0;i<12;i++){ 
       if(monthTrack.count[i]>0){
-        console.log(monthTrack.count[i]);
         let id='monthName'+i;
         document.getElementById(id).style.background='rgb(100, 200,'+50*monthTrack.count[i]+')';
       }
     }
+    getNextDividend();
     ticker.isOn=1;
 }
 
@@ -197,6 +192,7 @@ function autocomplete(inp, arr) {
       if(flag==false){
         createDivDates(e.target.textContent);
         flag=1;
+        isEmpty=false;
       }
       closeAllLists(e.target);
   });
@@ -215,21 +211,92 @@ function checkActive(ticker){
 }
 
 
-setInterval(function(){
-  var clock = document.getElementById('countDown');
-  clock.innerHTML = getCurrentTime();
-}, 1000);
+// setInterval(function(){
+//   if(isEmpty==false){
+//     var clock = document.getElementById('countDown');
+//     clock.innerHTML = getCurrentTime();
+//   }
+  
+// }, 1000);
 
-function getCurrentTime() {
+// function getCurrentTime() {
+//   var currentDate = new Date();
+//   var hours = currentDate.getHours() < 10 ? '0' + currentDate.getSeconds() : currentDate.getHours();
+//   hours === 0 ? hours = 12 : hours = hours;
+//   var minutes = currentDate.getMinutes();
+//   var seconds = currentDate.getSeconds() < 10 ? '0' + currentDate.getSeconds() : currentDate.getSeconds();
+//   var date = currentDate.getDate();
+//   var month = currentDate.getMonth(); 
+//   getNextDividend(month,date);
+//   var currentTime ='Day '+date+' Month '+month+' Hours '+ hours + ' Min ' + minutes + ' Sec ' + seconds;
+//   return currentTime;
+// }
+
+function getNextDividend(){
   var currentDate = new Date();
-  console.log(currentDate.getHours());
-  var hours = currentDate.getHours() < 10 ? '0' + currentDate.getSeconds() : currentDate.getHours();
-  hours === 0 ? hours = 12 : hours = hours;
-  var minutes = currentDate.getMinutes();
-  var seconds = currentDate.getSeconds() < 10 ? '0' + currentDate.getSeconds() : currentDate.getSeconds();
   var date = currentDate.getDate();
   var month = currentDate.getMonth(); 
-  console.log(date);
-  var currentTime ='Day '+date+' Month '+month+' Hours '+ hours + ' Min ' + minutes + ' Sec ' + seconds;
-  return currentTime;
+
+  let year=2019;
+  for(var i=month;i!=month-1;i++){
+    
+    if(i==12){
+      i=0;
+      year++;
+    }
+    
+    if(monthTrack.count[i]>0){
+      let companyName=document.getElementById('month'+(i+(2*12))).textContent;
+      let ticker = searchCompany(companyName);
+      // console.log(ticker.monthNum.length);
+      for(var a=0;a<ticker.monthNum.length;a++){
+        // console.log(ticker.monthNum[a]);
+        if(ticker.monthNum[a]==i){
+          let endtime=(ticker.monthNum[a]+1)+' '+ticker.day[a]+' '+year;
+          getTimeRemaining(endtime)
+          break;
+        }
+      }
+      // console.log(ticker.monthNum[1]);
+     break;
+    }
+    
+  }
+  // console.log(month+'  '+date+'  '+'  ');
+}
+
+function getTimeRemaining(endtime){
+  today = new Date();
+  BigDay = new Date(endtime);
+  msPerDay = 24 * 60 * 60 * 1000 ;
+  timeLeft = (BigDay.getTime() - today.getTime());
+  e_daysLeft = timeLeft / msPerDay;
+  daysLeft = Math.floor(e_daysLeft);
+  e_hrsLeft = (e_daysLeft - daysLeft)*24;
+  hrsLeft = Math.floor(e_hrsLeft);
+  minsLeft = Math.floor((e_hrsLeft - hrsLeft)*60);
+
+  document.getElementById('countDown').textContent=daysLeft;
+  console.log(daysLeft);
+
+  // console.log(endtime);
+  // var t = Date.parse(endtime) - Date.parse(new Date());
+  // console.log(t)
+  // var seconds = Math.floor( (t/1000) % 60 );
+  // var minutes = Math.floor( (t/1000/60) % 60 );
+  // var hours = Math.floor( (t/(1000*60*60)) % 24 );
+  // var days = Math.floor( t/(1000*60*60*24) );
+  // console.log(-days+'   '+-hours);
+}
+
+// Search company
+function searchCompany(companyName){
+  let ticker;
+  for(var i=0;i<dividendData.length;i++){
+      if(dividendData[i].name==companyName){
+        ticker=dividendData[i];
+        break;
+      }
+    }
+  return ticker;
 }
