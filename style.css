@@ -47,27 +47,31 @@
 
 /* Month Block */
 .monthBlock{
-    font-size: 50px;
-    /* margin-top: 20px; */
+    font-size: 45px;
+    margin-top: 18%;
 }
 
 /* Form */
 #form{
   display: grid;
-  grid-template-columns: 1fr 90px 1fr 1fr 1fr;
+  grid-template-columns: 2.3fr 300px 100px 200px 70px 1fr 5%;
 }
 
 #form h2{
   margin: 0px;
   padding: 0px;
   padding-top: 7px;
-  margin-left: 20px;
+  
+}
+
+#button{
+  margin-right: 20px;
 }
 
 /* countdown */
 #countDown{
   font-size: 35px;
-  padding-left:10px;
+  text-align: center;
 }
 
 #clock{
@@ -87,7 +91,7 @@ body {
   /*the container must be positioned relative:*/
   position: relative;
   display: inline-block;
-  margin-left: 800px;
+  margin-left: auto;
 }
 input {
   border: 1px solid transparent;
