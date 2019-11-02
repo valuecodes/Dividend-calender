@@ -41,6 +41,8 @@ function loadData(xhttp) {
     dividendData=data;
     for(var key in data){
         tickerList.push(key);
+        data[key].isOn=false;
+
     }
     // Create data blocks
     createDataBlocks();
@@ -76,12 +78,12 @@ function createDivDates(ticker){
 
         for(var i=0;i<dividendData[ticker].payDate.length;i++){
 
-          console.log(dividendData[ticker].payDate[i]);
+          // console.log(dividendData[ticker].payDate[i]);
           let text=document.createTextNode(ticker);
           
           let month=getMonth(dividendData[ticker].payDate[i]);
 
-          console.log(month);
+          // console.log(month);
 
           // for(var i=0;i<)
           let selectedMonth=document.getElementById('month'+(month+48-(monthTrack.count[month]*12)));
@@ -100,13 +102,15 @@ function createDivDates(ticker){
       }
     }
 
-    dividendData[ticker].isOn=1;
+    dividendData[ticker].isOn=true;
+
+    console.log(dividendData[ticker]);
     getNextDividend();
 
 }
  
 function getMonth(date){
-    console.log(date);
+    // console.log(date);
     month=date.split('.');
     // console.log(month[1]-1);
     return month[1]-1;
@@ -208,8 +212,8 @@ function autocomplete(inp, arr) {
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
 
-        console.log(dividendData[e.target.textContent].isOn != 1);
-      if(!dividendData[e.target.textContent].isOn){
+        console.log(e.target.textContent);
+      if(dividendData[e.target.textContent].isOn==false){
         createDivDates(e.target.textContent);
       }
       e.target.textContent='';
@@ -218,18 +222,18 @@ function autocomplete(inp, arr) {
 }
 
 // check if ticker is already displayed on the chart
-function checkActive(ticker){
+// function checkActive(ticker){
 
-    for(var key in dividendData){
-        // console.log(dividendData[key]);
-    if(key==ticker && dividendData[key].isOn == undefined){
+//     for(var key in dividendData){
+//         // console.log(dividendData[key]);
+//     if(key==ticker && dividendData[key].isOn == undefined){
 
-      return false;
-      break;
-    }
-  }
-  return true;
-}
+//       return false;
+//       break;
+//     }
+//   }
+//   return true;
+// }
 
 
 // setInterval(function(){
