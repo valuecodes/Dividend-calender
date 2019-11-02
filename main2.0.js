@@ -20,7 +20,7 @@ for(var i=1;i<monthsName.length;i++){
 }
 
 // Get dat from Git Hub
-loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/data.json", loadData);
+loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/newData.json", loadData);
 function loadDoc(url, cFunction) {
   var xhttp;
   xhttp=new XMLHttpRequest();
@@ -37,11 +37,11 @@ function loadDoc(url, cFunction) {
 function loadData(xhttp) {
 
     let data=JSON.parse(xhttp.responseText);
+    console.log(data);
     dividendData=data;
-    for(var i=0;i<data.length;i++){
-        tickerList.push(data[i].name);
+    for(var key in data){
+        tickerList.push(key);
     }
-
     // Create data blocks
     createDataBlocks();
     // Create Month blocks
@@ -50,7 +50,7 @@ function loadData(xhttp) {
 }
 
 function createDataBlocks(){
-  for(var i=0;i<36;i++){
+  for(var i=0;i<60;i++){
         let newDiv = document.createElement('div');
         newDiv.className = "monthBlock";
         newDiv.id = 'month'+i;
@@ -69,17 +69,21 @@ function createMonthBlocks(){
   }
 }
 
-function createDivDates(companyName){
-  // Search data
-  let ticker = searchCompany(companyName);
-  
+function createDivDates(ticker){
+// console.log(ticker);
   // Append data to month Blocks
-    for(var i=0;i<ticker.month.length;i++){
-        let text=document.createTextNode(ticker.name);
-        let selectedMonth=document.getElementById('month'+(ticker.monthNum[i]+24-(monthTrack.count[ticker.monthNum[i]]*12)));
+        // console.log(dividendData[ticker].payDate);
+        let text=document.createTextNode(ticker);
+        let month=getMonth(dividendData[ticker].payDate);
+
+        // console.log(month);
+
+        let selectedMonth=document.getElementById('month'+(month+48-(monthTrack.count[month]*12)));
         selectedMonth.appendChild(text);
-        monthTrack.count[ticker.monthNum[i]]++;
-    }
+        monthTrack.count[month]++;
+
+        // console.log(monthTrack);
+
     // Create colors for monthNames
     for(var i=0;i<12;i++){ 
       if(monthTrack.count[i]>0){
@@ -87,10 +91,18 @@ function createDivDates(companyName){
         document.getElementById(id).style.background='rgb(100, 200,'+50*monthTrack.count[i]+')';
       }
     }
-    getNextDividend();
-    ticker.isOn=1;
-}
 
+    dividendData[ticker].isOn=1;
+    getNextDividend();
+
+}
+ 
+function getMonth(date){
+    // console.log(date[0]);
+    month=date[0].split('.');
+    // console.log(month[1]-1);
+    return month[1]-1;
+}
 
 // Auto complete
 
@@ -188,22 +200,22 @@ function autocomplete(inp, arr) {
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
 
-    // create data for chart
-    let flag=checkActive(e.target.textContent);      
-      if(flag==false){
+        // console.log(dividendData[e.target.textContent].isOn != 1);
+      if(!dividendData[e.target.textContent].isOn){
         createDivDates(e.target.textContent);
-        flag=1;
-        isEmpty=false;
       }
-      closeAllLists(e.target);
+      e.target.textContent='';
   });
   }
 }
 
 // check if ticker is already displayed on the chart
 function checkActive(ticker){
-  for(var i=0;i<dividendData.length;i++){
-    if(dividendData[i].name==ticker && dividendData[i].isOn == undefined){
+
+    for(var key in dividendData){
+        // console.log(dividendData[key]);
+    if(key==ticker && dividendData[key].isOn == undefined){
+
       return false;
       break;
     }
@@ -239,18 +251,20 @@ function getNextDividend(){
   var month = currentDate.getMonth(); 
 
   let year=2019;
+  
   for(var i=month;i!=month-1;i++){
-    
+    console.log(i);
     if(i==12){
       i=0;
       year++;
     }
-    
+    // console.log(monthTrack.count[i]);
     if(monthTrack.count[i]>0){
-      let companyName=document.getElementById('month'+(i+(2*12))).textContent;
-      let ticker = searchCompany(companyName);
-      // console.log(ticker.monthNum.length);
-      for(var a=0;a<ticker.monthNum.length;a++){
+      let companyName=document.getElementById('month'+(i+(4*12))).textContent;
+      console.log(companyName);
+      console.log(dividendData[companyName].payDate);
+    //   --------------------------------------------------------------------------------
+      for(var a=0;a<dividendData[companyName].payDate.length;a++){
         // console.log(ticker.monthNum[a]);
         if(ticker.monthNum[a]==i){
           let endtime=(ticker.monthNum[a]+1)+' '+ticker.day[a]+' '+year;
@@ -278,7 +292,7 @@ function getTimeRemaining(endtime){
   minsLeft = Math.floor((e_hrsLeft - hrsLeft)*60);
 
   document.getElementById('countDown').textContent=daysLeft;
-  console.log(daysLeft);
+//   console.log(daysLeft);
 
   // console.log(endtime);
   // var t = Date.parse(endtime) - Date.parse(new Date());
@@ -291,13 +305,13 @@ function getTimeRemaining(endtime){
 }
 
 // Search company
-function searchCompany(companyName){
-  let ticker;
-  for(var i=0;i<dividendData.length;i++){
-      if(dividendData[i].name==companyName){
-        ticker=dividendData[i];
-        break;
-      }
-    }
-  return ticker;
-}
+// function searchCompany(companyName){
+//   let ticker;
+//   for(var i=0;i<dividendData.length;i++){
+//       if(dividendData[i].name==companyName){
+//         ticker=dividendData[i];
+//         break;
+//       }
+//     }
+//   return ticker;
+// }
