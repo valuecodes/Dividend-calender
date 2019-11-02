@@ -42,7 +42,6 @@ function loadData(xhttp) {
     for(var key in data){
         tickerList.push(key);
     }
-    console.log(tickerList);
     // Create data blocks
     createDataBlocks();
     // Create Month blocks
@@ -101,13 +100,13 @@ function createDivDates(ticker){
       }
     }
 
-    dividendData[ticker].isOn=true;
+    dividendData[ticker].isOn=1;
     getNextDividend();
 
 }
  
 function getMonth(date){
-    // console.log(date[0]);
+    console.log(date);
     month=date.split('.');
     // console.log(month[1]-1);
     return month[1]-1;
@@ -208,7 +207,9 @@ function autocomplete(inp, arr) {
 
   /*execute a function when someone clicks in the document:*/
   document.addEventListener("click", function (e) {
-      if(dividendData[e.target.textContent].isOn==undefined){
+
+        console.log(dividendData[e.target.textContent].isOn != 1);
+      if(!dividendData[e.target.textContent].isOn){
         createDivDates(e.target.textContent);
       }
       e.target.textContent='';
@@ -217,18 +218,18 @@ function autocomplete(inp, arr) {
 }
 
 // check if ticker is already displayed on the chart
-// function checkActive(ticker){
+function checkActive(ticker){
 
-//     for(var key in dividendData){
-//         // console.log(dividendData[key]);
-//     if(key==ticker && dividendData[key].isOn == undefined){
+    for(var key in dividendData){
+        // console.log(dividendData[key]);
+    if(key==ticker && dividendData[key].isOn == undefined){
 
-//       return false;
-//       break;
-//     }
-//   }
-//   return true;
-// }
+      return false;
+      break;
+    }
+  }
+  return true;
+}
 
 
 // setInterval(function(){
