@@ -15,15 +15,10 @@ class companies{
     }
 }
 
-// console.log(words[0][2].split('\t'));
-
-
 for(var i=0;i<words.length;i++){
-    let company=words[i][0].split('\t')
 
-    // console.log(words[i][1]);
+    let company=words[i][0].split('\t')
     if(company[0]==''){
-        
         let name=company[1].split(' ')[0];
         let ticker=company[1].split('(');
         ticker=ticker[1].split(')')[0];
@@ -32,28 +27,19 @@ for(var i=0;i<words.length;i++){
         let exDiv=company[2].split(' ')[1]+'.'+(toMonth(company[2].split(' ')[0]))+'.'+company1[0].split(' ')[1];
         let dividend=company1[1];
         let payDate=company1[3].split(' ')[1]+'.'+(toMonth(company1[3].split(' ')[0]))+'.'+company2[0].split(' ')[1];
-        
-        // console.log(name,exDiv,payDate);
-        console.log(ticker,name,exDiv,payDate,dividend,'FIN');
-        // data[ticker] = new companies(name,exDiv,payDate,dividend,'FIN');
+
+        // Check if company pays multiple dividends per year
         if(data[ticker]){
             data[ticker].exDiv.push(exDiv)
             data[ticker].payDate.push(payDate)
             data[ticker].dividend.push(dividend)
         }else{
             data[ticker] = new companies(name,exDiv,payDate,dividend,'FIN');
-        }
-        
-        
-
-        // data[word[0]] = new company(fullName[0],words[i][2],words[i][5],words[i][3]);
-
+        }     
     }
-    
 }
 
-console.log(data);
-
+// Translate month text num
 function toMonth(data){
     let num;
     switch(data){
@@ -101,51 +87,16 @@ function toMonth(data){
 }
 
 
-// for(var i=0;i<words.length;i++){
-//     // console.log(words[i]);
-//     if(words[i][0]==''){
-//         // console.log(words[i]);
-//         for(var a=words[i][1].length-1;a>0;a--){
-//             if(words[i][1][a]=='('){
-//                 let fullName=words[i][1].split('(');
-//                 word=fullName[1].split(')');
-//                 let date=words[i][2].split('.')
-                
-//                 if(data[word[0]]){
-//                     data[word[0]].exDiv.push(words[i][2])
-//                     data[word[0]].payDate.push(words[i][5])
-//                     data[word[0]].dividend.push(words[i][3])
-//                 }else{
-//                     data[word[0]] = new company(fullName[0],words[i][2],words[i][5],words[i][3]);
-//                 }
+// Save data to file
 
-//             }
-//         }
-        
-//     }
+// saveData(data);
+
+// function saveData(data){
+//     data= JSON.stringify(data);
+//     fs.writeFileSync('data/newData.json',data,finished); 
 // }
 
-// console.log(data);
-
-saveData(data);
-
-function saveData(data){
-    data= JSON.stringify(data);
-    fs.writeFileSync('data/newData.json',data,finished); 
-}
-
-function finished(err){
-    console.log('all set.');
-}
-
-
-// console.log(toFile[2].name);
-
-// data[toFile[2].name] = new company(toFile[2].name,toFile[2].name,toFile[2].name);
-
-// data : {
-//     'name':'1'
-// };
-
-// console.log(data['NOKIA']);
+// function finished(err){
+//     console.log('all set.');
+// }
 

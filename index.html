@@ -14,24 +14,22 @@
     </div>
     <form autocomplete="off" id="form">
         <div></div>
-        <div class="autocomplete" style="width:300px;">
-        <input id="myInput" type="text" name="myCountry" placeholder="Country">
+        <div id="searchBox">
+            <input type="text" id="search">
+            <div id="result"></div>
         </div>
-        <input type="submit" id="button" >
+        <div></div>
         <h2 id="ctext">Next dividend in: </h2>
         <div id="countDown"></div>
         <h2>Days</h2>
     </form>
-    
     <div class="calender">
         <div class="data" id="data">
         </div>
         <div class="months" id="monthBlocks">
         </div>
-
     </div>
-    <script>
-        autocomplete(document.getElementById("myInput"), tickerList);
-    </script>
+    <div id="dividendList">
+    </div>
 </body>
 </html>
