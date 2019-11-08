@@ -87,6 +87,14 @@ body{
     border: 5px solid;
     border-top: 2px solid;
     text-align: center;
+    height:50px;
+}
+
+#monthSum h3{
+  font-size: 25px;
+    margin: 7px;
+    padding: 0px;
+    padding-top: 5px;
 }
 
 /* Data */

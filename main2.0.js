@@ -4,16 +4,18 @@ let monthsName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov
 let isEmpty=true;
 
 class monthStack{
-  constructor(name,number,count,sum){
+  constructor(name,number,count,sum,activeList){
     this.name = [name];
     this.number=[number];
     this.count = [count];
     this.sum = [sum];
+    this.activeList = activeList;
   }
 }
 
 // create month data
-let monthTrack = new monthStack(monthsName[0],0,0);
+let monthTrack = new monthStack(monthsName[0],0,0,0,[]);
+
 for(var i=1;i<monthsName.length;i++){
   monthTrack.name.push(monthsName[i]);
   monthTrack.number.push(i);
@@ -51,6 +53,13 @@ function loadData(xhttp) {
     createSumBlocks();
     // Listen to searchbox
     autocomplete();
+    for(var i=0;i<5;i++){
+          let tickers=['CTY1S','INVEST','HOIVA','ROVIO','OLVAS','CTY1S'];
+          createDivDates(tickers[i]);
+        }
+    console.log(monthTrack);
+
+    calculateTotal();
 }
 
 // Craete Sum blocks
@@ -98,6 +107,7 @@ function createDivDates(ticker){
           monthTrack.count[month]++;
         } 
     dividendData[ticker].isOn=true;
+    monthTrack.activeList.push(ticker);
     addTickerTolist(ticker);
     getNextDividend();
     createColors();   
@@ -123,7 +133,7 @@ function addTickerTolist(tickerKey){
     text.id='active,'+tickerKey;
     let input=document.createElement('input',text.id);
     input.className='activeInput';
-    input.addEventListener('input',()=>{calculateTotal(text,text.id)});
+    input.addEventListener('input',()=>{calculateTotal()});
 
     let deleteButton=document.createElement('div');
     deleteButton.className='deleteButton';
@@ -135,15 +145,37 @@ function addTickerTolist(tickerKey){
     text.appendChild(deleteButton);
 }
 
-// -----------------------------------------------------------------------------------------
-function calculateTotal(value,id){
-  let perShare=dividendData[id.split(',')[1]].dividend;
-  let shareCount=value.getElementsByClassName('activeInput')[0].value;
-  let totalSum=perShare*shareCount;
-  let len=dividendData[id.split(',')[1]].payDate.length;
-  for(var i=0;i<len;i++){
-    let month=getMonth(dividendData[id.split(',')[1]].payDate[i]);
-    document.getElementById('sum,'+month).textContent=totalSum;
+function calculateTotal(){
+  for(var i=0;i<12;i++){
+    monthTrack.sum[i]=0;
+  }
+  for(var i=0;i<monthTrack.activeList.length;i++){
+      let ticker=monthTrack.activeList[i];
+      let len=dividendData[ticker].dividend.length;
+      for(var a=0;a<len;a++){
+        let perShare=dividendData[ticker].dividend[a];
+        // console.log(perShare);
+        let shareCount=document.getElementById('active,'+ticker).children[0].value;
+        if(shareCount!=""){
+          let totalSum=perShare*shareCount;
+          // console.log(totalSum);
+          let month=getMonth(dividendData[ticker].payDate[a]);
+          let prev=Number(monthTrack.sum[month]);
+          let total=prev+=totalSum;
+          total=Math.round(total*100 )/100;
+          monthTrack.sum[month]=total.toFixed(2);
+        }
+      }
+    }
+    createTotal();
+    // console.log(monthTrack.sum);
+}
+
+function createTotal(){
+  for(var i=0;i<12;i++){
+    let node = document.getElementById('sum,'+i);
+    let sum = monthTrack.sum[i];
+    node.textContent=sum;
   }
 }
 
@@ -155,8 +187,11 @@ function removeTicker(ticker){
   var elem = document.getElementById('active,'+ticker);
   elem.parentNode.removeChild(elem);
   dividendData[ticker].isOn=false;
+  monthTrack.activeList=monthTrack.activeList.filter(item => item !== ticker);
+  
   createColors();
   getNextDividend();
+  calculateTotal();
 }
 
 
