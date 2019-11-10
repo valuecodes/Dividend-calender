@@ -1,6 +1,7 @@
 
 body{
   font-family: Arial, Helvetica, sans-serif;
+  background-image: linear-gradient(rgb(255, 255, 255),rgb(206, 206, 206));
 }
 
 
@@ -8,23 +9,24 @@ body{
 .header{
     background-color:  rgb(156, 190, 179);
     text-align: center;
-  
 }
 
 /* Main section */
 .mainSection{
   display: grid;
-  grid-template-columns: 1fr 10fr;
+  grid-template-columns: 173px 10fr 173px;
 }
 
 /* Active ticker list */
 .activeTicker{
   display: grid;
   grid-template-columns: 3fr 2fr 1fr;
-  background-color: rgb(162, 207, 247);
+  background-color: rgba(128, 128, 128, 0.5);
   padding: 3px 3px 3px 3px;
   margin: 0px 3px 3px 0px;
   font-size: 20px;
+  border: 3px solid;
+  border-radius: 5px;
 }
 
 .activeInput{
@@ -36,20 +38,24 @@ body{
   padding: 0px;
   width: 100%;
   height: 100%;
-  background-color: rgb(233, 112, 112);
+  background-color: rgba(255, 96, 96, 0.8);
+  border-radius: 2px;
   font-size: 20px;
   text-align: center;
+  
 }
 
 /* Calender */
 .calender{
-    width:90%;
+    width:100%;
     height: 395px;
-    background-color: rgb(186, 228, 214);
-    /* margin-left: auto; */
+    /* background-color: rgb(186, 228, 214); */
+    background-color: rgb(255, 255, 255);
     margin-right: auto;
     display: grid;
     grid-template-rows: 10fr 1fr;
+    border: 5px solid;
+    border-radius: 5px;
 }
 
 
@@ -58,8 +64,7 @@ body{
 .months{
     display: grid;
     grid-template-columns: repeat(12,1fr);
-    border: 3px solid;
-    
+    height: 1fr;
     text-align: center;
 }
 
@@ -67,19 +72,8 @@ body{
     font-size: 30px;
     margin: 0px;
     padding: 0px;
-    height: 100%;
-    border: 3px solid;
 }
 
-.dividendSection{
-  width:81.8%;
-  height: 400px;
-  background-color: rgb(186, 228, 214);
-  margin-left: auto;
-  margin-right: auto;
-  display: grid;
-  grid-template-rows: 1fr 10fr;
-}
 
 #monthSum{
     display: grid;
@@ -110,14 +104,15 @@ body{
 /* Month Block */
 .monthBlock{
     font-size: 30px;
-    margin-top: 18%;
+    margin: 6px 7px;
+    padding-top: 9px;
 }
 
 /* Form */
 #form{
   height: 36px;
   display: grid;
-  grid-template-columns: 2.3fr 300px 100px 200px 70px 1fr 5%;
+  grid-template-columns: 2.3fr 300px 100px 200px 70px 70px 70px 287px;
 }
 
 #form h2{
@@ -171,6 +166,9 @@ body{
   border: 2px solid rgb(199, 199, 199);
   border-top: 0px;
   position:relative;
+  margin-top: -3px;
+  /* opacity: 0; */
+  /* visibility: hidden; */
 }
 
 .searchResult{
@@ -190,5 +188,103 @@ body{
 }
 
 .searchResult:hover{
-  background-color: rgb(210, 229, 255);
+  background-color: rgb(199, 199, 199);
+}
+
+/* Dividend section */
+.dividendSection{
+  width:82%;
+  height: 400px;
+  background-color: rgb(255, 255, 255);
+  margin-left: 175px;
+  margin-right: auto;
+  display: grid;
+  grid-template-rows: 1fr 10fr;
+}
+
+.container{
+  height: 100px;
+}
+
+#average{
+  position: initial;
+  height: 55px;
+  width: 190px;
+  margin-left: auto;
+  margin-right: -39px;
+  color: rgba(55, 99, 232, 0.9);
+}
+
+#averageDivPoint{
+  position: absolute;
+  height: 35px;
+  width: 165px;
+  font-size: 33px;
+  margin-left: auto;
+  right: 0px;
+  margin-right: -25px;
+  /* background-color: rgba(25, 140, 232, 0.9);
+  border-radius: 95px 5px 0px 90px; */
+}
+
+#targetPoint{
+  position: absolute;
+}
+
+#targetArrow{
+  position: absolute;
+  color: rgba(345, 129, 132, 0.9);
+  margin-left:56px;
+}
+
+/* Targets */
+#targets{
+  position:relative;
+  margin-top: -240px;
+  margin-left: 1547px;
+  z-index: 99;
+  width: 170px;
+}
+
+.targetInput{
+  font-size: 20px;
+  border: 2px solid rgba(345, 129, 132, 0.9);
+  margin-top: 3px;
+  width: 100%;
+}
+
+#targets h3{
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  /* padding-top: 5px; */
+}
+
+
+/* Arrow */
+i {
+  border: solid;
+  border-width: 0 5px 5px 0;
+  display: inline-block;
+  padding: 10px;
+}
+
+.right {
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.left {
+  transform: rotate(135deg);
+  -webkit-transform: rotate(135deg);
+}
+
+.up {
+  transform: rotate(-135deg);
+  -webkit-transform: rotate(-135deg);
+}
+
+.down {
+  transform: rotate(45deg);
+  -webkit-transform: rotate(45deg);
 }

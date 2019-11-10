@@ -2,6 +2,7 @@ let tickerList=[];
 let dividendData;
 let monthsName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 let isEmpty=true;
+let globalX=0;
 
 class monthStack{
   constructor(name,number,count,sum,activeList){
@@ -49,17 +50,52 @@ function loadData(xhttp) {
     createDataBlocks();
     // Create Month blocks
     createMonthBlocks();
-    // Create Sum Blocks
-    createSumBlocks();
     // Listen to searchbox
     autocomplete();
     for(var i=0;i<5;i++){
           let tickers=['CTY1S','INVEST','HOIVA','ROVIO','OLVAS','CTY1S'];
           createDivDates(tickers[i]);
         }
-    console.log(monthTrack);
-
+    // Listen dividend goal inputs
+    dividendTargets();
     calculateTotal();
+}
+
+let dividendTargets=()=>{
+  // console.log('testi')
+  let monthGoal=document.getElementById('targetMonth');
+  let yearGoal=document.getElementById('targetYear');
+  // Remove text from input
+  monthGoal.addEventListener('focusin',() => {
+    yearGoal.value=yearGoal.value.split(' ')[0];
+    monthGoal.value=monthGoal.value.split(' ')[0];
+  });
+  yearGoal.addEventListener('focusin',() => {
+    yearGoal.value=yearGoal.value.split(' ')[0];
+    monthGoal.value=monthGoal.value.split(' ')[0];
+  });
+  // Read value from Input and update chart
+  monthGoal.addEventListener('input',() => {
+    yearGoal.value=monthGoal.value*12;
+    createChart(monthTrack.name,monthTrack.sum);
+  });
+  yearGoal.addEventListener('input',() => {
+    monthGoal.value=(yearGoal.value/12).toFixed(2);
+    createChart(monthTrack.name,monthTrack.sum);
+  });
+  // Add text to input
+  monthGoal.addEventListener('focusout',() => {
+    yearGoal.value+=' €/Year';
+    monthGoal.value+=' €/Month';
+  });
+  yearGoal.addEventListener('focusout',() => {
+    yearGoal.value+=' €/Year';
+    monthGoal.value+=' €/Month';
+  });
+}
+
+let testit=(goal)=>{
+  console.log(goal)
 }
 
 // Craete Sum blocks
@@ -98,19 +134,32 @@ function createMonthBlocks(){
 function createDivDates(ticker){
   // Append data to month Blocks
         for(var i=0;i<dividendData[ticker].payDate.length;i++){
-          console.log(dividendData[ticker].payDate[i]);
           let text=document.createTextNode(ticker);
           let month=getMonth(dividendData[ticker].payDate[i]);
           let selectedMonth=document.getElementById('month'+monthTrack.count[month]+','+month);
           dividendData[ticker].position.push(selectedMonth.id);
           selectedMonth.appendChild(text);
           monthTrack.count[month]++;
+          addMonthBlockStyle(selectedMonth.id,'on');
         } 
     dividendData[ticker].isOn=true;
     monthTrack.activeList.push(ticker);
     addTickerTolist(ticker);
     getNextDividend();
-    createColors();   
+    // createColors();   
+}
+
+let addMonthBlockStyle=(selectedMonth,check)=>{
+  let monthBlock=document.getElementById(selectedMonth);
+  if(check=='on'){  
+    monthBlock.style.border='3px solid';
+    monthBlock.style.borderRadius = '7px'
+    monthBlock.style.backgroundColor = 'rgba(128, 128, 128, 0.5)';
+  }else{
+    monthBlock.style.border='';
+    monthBlock.style.borderRadius = ''
+    monthBlock.style.backgroundColor = '';
+  }
 }
 
 function createColors(){
@@ -154,11 +203,9 @@ function calculateTotal(){
       let len=dividendData[ticker].dividend.length;
       for(var a=0;a<len;a++){
         let perShare=dividendData[ticker].dividend[a];
-        // console.log(perShare);
         let shareCount=document.getElementById('active,'+ticker).children[0].value;
         if(shareCount!=""){
           let totalSum=perShare*shareCount;
-          // console.log(totalSum);
           let month=getMonth(dividendData[ticker].payDate[a]);
           let prev=Number(monthTrack.sum[month]);
           let total=prev+=totalSum;
@@ -167,21 +214,13 @@ function calculateTotal(){
         }
       }
     }
-    createTotal();
-    // console.log(monthTrack.sum);
-}
-
-function createTotal(){
-  for(var i=0;i<12;i++){
-    let node = document.getElementById('sum,'+i);
-    let sum = monthTrack.sum[i];
-    node.textContent=sum;
-  }
+    createChart(monthTrack.name,monthTrack.sum);
 }
 
 function removeTicker(ticker){
   for(var i=0;i<dividendData[ticker].position.length;i++){
     pushDown(dividendData[ticker].position[i],ticker,i);
+    
   }
   dividendData[ticker].position=[];
   var elem = document.getElementById('active,'+ticker);
@@ -189,7 +228,7 @@ function removeTicker(ticker){
   dividendData[ticker].isOn=false;
   monthTrack.activeList=monthTrack.activeList.filter(item => item !== ticker);
   
-  createColors();
+  // createColors();
   getNextDividend();
   calculateTotal();
 }
@@ -207,17 +246,22 @@ function pushDown(position,ticker,i){
     dividendData[ticker].position
     currentMonth.textContent=topMonth.textContent;
     if(topMonth.textContent==""){
+      addMonthBlockStyle(currentMonth.id,'off');
       break;
     }
     for(var b=0;b<dividendData[currentMonth.textContent].position.length;b++){
       if(dividendData[currentMonth.textContent].position[b].split(',')[1]==currentMonth.id.split(',')[1]){
         dividendData[currentMonth.textContent].position[b]=currentMonth.id;
+        if(topMonth==""){
+          addMonthBlockStyle(topMonth.id,'off');
+        }
       }
     }
     currentPosiotion++;
   }
   let month=getMonth(dividendData[ticker].payDate[i]);
   monthTrack.count[month]--;
+  
 }
  
 function getMonth(date){
@@ -330,4 +374,176 @@ function autocomplete(){
   search.addEventListener('input', () => searchTickers(search.value));
 }
 
+function createChart(name,sum){
+  // console.log(name,sum);
+  let divTarget=false;
+  let targetData=checkTarget();
+  let average=getAverage(sum);
+  var ctx = document.getElementById('myChart').getContext('2d');
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: name,
+          
+          datasets: [{
+            label:'Dividends',
+            data: sum,
+            backgroundColor:'rgba(55, 199, 132, 0.5)',
+          }, {
+            label: 'Average',
+            data: average,
+            borderColor:'rgba(55, 99, 232, 0.9)',
+            backgroundColor:'rgba(25, 140, 232, 0.7)',
+            type: 'line'
+        },
+        {
+          label:'My Target',
+          data: targetData,
+          borderColor:'rgba(345, 129, 132, 0.9)',
+          backgroundColor:'rgba(325, 159, 112, 0.9)',
+          type: 'line',
+          fill:false,
+          hidden:divTarget
+      }
+        ],
+      },
+      options: {
+        layout: {
+        padding: {
+            left: 0,
+            right: 0,
+            top: 38,
+            bottom: 0
+        }
+    },
+    tooltips: {enabled: false},
+    hover: {mode: null},
+        responsive: true, 
+  maintainAspectRatio: false,
+          legend: {
+              display: true,
+              position: 'right',
+              align:'start',
+              labels: { 
+              fontSize: 30,
+              filter: function(item, chart) {
+                if(divTarget!=false){
+                  return !item.text.includes('Target');
+                }else{
+                  return item.text;
+                }
+                
+            }
+              }
+            
+          },
+          scales: {
+            xAxes: [{
+              ticks:{
+                fontSize:20
+              }
+            }],
+              yAxes: [{
+                  ticks: {
+                    margin: 100,
+                      fontSize: 20,         
+                      maxTicksLimit: 8,
+                      beginAtZero: true,
+                      callback: function(value,index,values){
+                        return value+'€'+' ';
+                      },
+                  }
+              }]
+          },
+          animation: {
+            duration: 500,
+            easing: "easeOutQuart",
+            onComplete: function () {
+                var ctx = this.chart.ctx;
+                ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.font = '20px';
+                this.data.datasets.forEach(function (dataset) {
+                    for (var i = 0; i < dataset.data.length; i++) {
+                        var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
+                            scale_max = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._yScale.maxHeight;
+                        ctx.fillStyle = '#444';
+                        ctx.font = "30px Helvetica";
+                        var y_pos = model.y - 5;
+                        if ((scale_max - model.y) / scale_max >= 0.93)
+                            y_pos = model.y + 30;
+                        if(dataset.data[i]>0 && dataset.data[i]!=average[0]&& dataset.data[i]!=targetData[0]){
+                          ctx.fillText(dataset.data[i]+'€', model.x, y_pos);
+                        }
+                    }
+                });               
+            }
+        }
+      }
+  });
+  myChart.canvas.parentNode.style.height = '400px';
+  myChart.canvas.parentNode.style.width = '1710px';
+  let xPos=myChart.config.data.datasets[1]._meta[globalX].dataset._children[0]._model.y;
+  let targetPos=myChart.config.data.datasets[2]._meta[globalX].dataset._children[0]._model.y;
+  globalX++;
+  console.log(targetPos);
+  setTargetPos(targetPos);
+  setAverageY(xPos,average[11]);
+}
 
+let setTargetPos=(targetPos)=>{
+  console.log(targetPos);
+  let targetPoint=document.getElementById('targetPoint');
+  if(targetPos==69){
+    targetPoint.style.marginTop=344+'px';
+  }else{
+    targetPoint.style.marginTop=targetPos-12+'px';
+  }
+}
+
+let setAverageY=(xPos,number)=>{
+  let average=document.getElementById('average');
+  let averageDivPoint=document.getElementById('averageDivPoint');
+  if(xPos<200){
+    average.style.marginTop=-73+'px';
+    averageDivPoint.style.marginTop=337+'px';
+    document.getElementById('averageDivPoint').textContent=0+' €';
+  }else{
+    average.style.marginTop=-429+xPos+'px';
+    averageDivPoint.style.marginTop=-19+xPos+'px';
+    if(number.toString().length>7){
+      number=Math.round(number);
+    }
+    document.getElementById('averageDivPoint').textContent=number+' €';
+  }
+}
+
+// Get average for average line 
+let getAverage=(data)=>{
+  let total=0;
+  for(var i=0;i<12;i++){
+    total+=parseFloat(data[i]);
+  }
+  total=total/12;
+  let totalArray=[];
+  for(var i=0;i<12;i++){
+    totalArray.push(parseFloat(total.toFixed(2)));
+  }
+  return totalArray;
+}
+
+// Check if target is filled and create array for target line
+let checkTarget=()=>{
+  let target=document.getElementById('targetMonth').value;
+  let total=[];
+  for(var i=0;i<12;i++){
+      if(target==""){
+        total.push(0);
+      }else{
+        total.push(parseFloat(target));
+      }
+      
+  }
+  return total;
+}
