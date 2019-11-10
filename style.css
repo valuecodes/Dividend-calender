@@ -199,7 +199,8 @@ body{
   margin-left: 175px;
   margin-right: auto;
   display: grid;
-  grid-template-rows: 1fr 10fr;
+  /* grid-template-rows: 1fr 10fr; */
+  grid-template-columns: 175 1fr;
 }
 
 .container{
@@ -228,38 +229,46 @@ body{
 }
 
 #targetPoint{
-  position: absolute;
+  margin-top: 10px;
+  font-size: 38px;
+  text-align: center;
+  margin:0px 0px 0px -21px;
+  padding: 0px;
 }
 
 #targetArrow{
   position: absolute;
   color: rgba(345, 129, 132, 0.9);
-  margin-left:56px;
+  margin-left:146px;
 }
 
 /* Targets */
 #targets{
   position:relative;
-  margin-top: -240px;
-  margin-left: 1547px;
+  margin-top: -400px;
+  margin-left: -180px;
   z-index: 99;
   width: 170px;
 }
 
 .targetInput{
-  font-size: 20px;
+  height: 25px;
+  font-size: 15px;
   border: 2px solid rgba(345, 129, 132, 0.9);
   margin-top: 3px;
-  width: 100%;
+  width: 80%;
 }
 
-#targets h3{
-  width: 100%;
+#myTarget{
+  font-size: 30px;
+  padding: 5px 0px;
   margin: 0px;
-  padding: 0px;
-  /* padding-top: 5px; */
 }
 
+#currentStatus{
+  margin: 0px;
+  padding: 12px 0px;
+}
 
 /* Arrow */
 i {

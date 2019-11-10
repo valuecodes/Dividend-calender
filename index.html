@@ -15,7 +15,7 @@
     <form autocomplete="off" id="form">
         <div>Famous Investors portfolios / My portfolios / Set dividend goal total/monthly / Icons for 1 dividend type </div>
         <div id="searchBox">
-            <input type="text" id="search">
+            <input type="text" id="search" placeholder="Add tickers">
             <div id="result"></div>
         </div>
         <div></div>
@@ -25,7 +25,6 @@
         <h2 id="nextAmount"></h2>
         <div>Total Dividends</div>
     </form>
-
     <div  class="mainSection">
         <div class="activeList">
             <div id="dividendList"></div>
@@ -36,20 +35,27 @@
             <div class="months" id="monthBlocks"></div>
         </div>    
     </div>
-    <h3 id="averageDivPoint"></h3>
-    <h3 id="targetPoint">
-        Target 0%
-        <i id="targetArrow" class="arrow right"></i>
-    </h3>
+    <i id="targetArrow" class="arrow right"></i>
     <div class="dividendSection">
         <div class="container">
             <canvas id="myChart"></canvas>
-            </div><div id="average">
-                <p><i class="arrow left"></i></p>
-            </div><div id="targets">
-                    <input class="targetInput" id="targetMonth" type="text" placeholder="Set a month target">
-                    <input class="targetInput" id="targetYear" type="text" placeholder="Set a yearly goal">
+        </div>
+        <div id="average">
+            <h3 id="averageDivPoint"></h3>
+            <p><i class="arrow left"></i></p>
+        </div>
+            <div id="targets">
+                <h3 id="myTarget">My target</h3>
+                <input class="targetInput" id="targetMonth" type="text" placeholder="Set a month target">
+                <input class="targetInput" id="targetYear" type="text" placeholder="Set a yearly goal">
+                <h3 id="currentStatus">Percent of Target</h3>
+                <h3 id="targetPoint"></h3>
+                <div class="dividendAmounts">
+                    <h3 id="amountYear">Year</h3>
+                    <h3 id="amountMonth">Month</h3>
+                    <h3 id="amountDay">Day</h3>
                 </div>
+            </div>
     </div>
     <script type="text/javascript" src="/node_modules/chart.js/dist/Chart.min.js"></script>
 <script src="chart.js"></script>

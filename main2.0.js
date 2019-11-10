@@ -85,12 +85,22 @@ let dividendTargets=()=>{
   });
   // Add text to input
   monthGoal.addEventListener('focusout',() => {
-    yearGoal.value+=' €/Year';
-    monthGoal.value+=' €/Month';
+    if(monthGoal.value>0||monthGoal.value==' '){
+      yearGoal.value+=' €/Year';
+      monthGoal.value+=' €/Month';
+    }else{
+      yearGoal.value+='';
+      monthGoal.value+='';
+    }
   });
   yearGoal.addEventListener('focusout',() => {
-    yearGoal.value+=' €/Year';
-    monthGoal.value+=' €/Month';
+    if(yearGoal.value>0||yearGoal.value==' '){
+      yearGoal.value+=' €/Year';
+      monthGoal.value+=' €/Month';
+    }else{
+      yearGoal.value+='';
+      monthGoal.value+='';
+    }
   });
 }
 
@@ -397,7 +407,7 @@ function createChart(name,sum){
             type: 'line'
         },
         {
-          label:'My Target',
+          label:'Target',
           data: targetData,
           borderColor:'rgba(345, 129, 132, 0.9)',
           backgroundColor:'rgba(325, 159, 112, 0.9)',
@@ -487,18 +497,55 @@ function createChart(name,sum){
   let xPos=myChart.config.data.datasets[1]._meta[globalX].dataset._children[0]._model.y;
   let targetPos=myChart.config.data.datasets[2]._meta[globalX].dataset._children[0]._model.y;
   globalX++;
-  console.log(targetPos);
-  setTargetPos(targetPos);
+  // console.log(targetPos);
   setAverageY(xPos,average[11]);
+  setTargetPos(targetPos,targetData[11]);
+  calculateAmounts();
 }
 
-let setTargetPos=(targetPos)=>{
-  console.log(targetPos);
+let calculateAmounts=()=>{
+  console.log(monthTrack.sum);
+  let total=0;
+  for(var i=0;i<12;i++){
+    total+=parseFloat(monthTrack.sum[i]);
+  }
+  total=total.toFixed(2);
+  document.getElementById('amountYear').textContent='Year:\xa0\xa0\xa0\xa0'+total+
+  ' €';
+  document.getElementById('amountMonth').textContent='Month:\xa0'+(total/12).toFixed(2)+
+  ' €';
+  document.getElementById('amountDay').textContent='Day:\xa0\xa0\xa0\xa0\xa0'+(total/365).toFixed(2)+
+  ' €';
+}
+
+let setTargetPos=(targetPos,targetData)=>{
+  let average=document.getElementById('averageDivPoint').textContent;
+  let arrow=document.getElementById('targetArrow')
+  let percent=average.split(' ')[0]/targetData;
   let targetPoint=document.getElementById('targetPoint');
-  if(targetPos==69){
-    targetPoint.style.marginTop=344+'px';
+  
+  if((percent*100).toFixed(2)==isNaN||(percent*100).toFixed(2)==Infinity){
+    percent=0;
   }else{
-    targetPoint.style.marginTop=targetPos-12+'px';
+    percent=(percent*100).toFixed(2);
+  }
+  // console.log(percent);
+  if(targetPos==69||percent==NaN){
+    // console.log(percent);
+    targetPoint.textContent='0%'
+    arrow.style.marginTop=344+'px';
+  }else{
+      console.log(percent);
+      if(percent<=100){
+        targetPoint.textContent=percent+'%';
+        arrow.style.marginTop=targetPos-12+'px';
+      }else{
+        targetPoint.textContent='Target reached';
+        arrow.style.marginTop=targetPos-12+'px';
+      }    
+  }
+  if(targetPoint.textContent=='Target NaN%'||targetData==0){
+    targetPoint.textContent='0%';
   }
 }
 
@@ -507,11 +554,11 @@ let setAverageY=(xPos,number)=>{
   let averageDivPoint=document.getElementById('averageDivPoint');
   if(xPos<200){
     average.style.marginTop=-73+'px';
-    averageDivPoint.style.marginTop=337+'px';
+    averageDivPoint.style.marginTop=10+'px';
     document.getElementById('averageDivPoint').textContent=0+' €';
   }else{
     average.style.marginTop=-429+xPos+'px';
-    averageDivPoint.style.marginTop=-19+xPos+'px';
+    // averageDivPoint.style.marginTop=-355+xPos+'px';
     if(number.toString().length>7){
       number=Math.round(number);
     }
