@@ -59,6 +59,7 @@ function loadData(xhttp) {
     // Listen dividend goal inputs
     dividendTargets();
     calculateTotal();
+    createChart(0,0)
 }
 
 let dividendTargets=()=>{
@@ -385,7 +386,11 @@ function autocomplete(){
 }
 
 function createChart(name,sum){
-  // console.log(name,sum);
+  
+  // if(name==0){
+
+  // }
+
   let divTarget=false;
   let targetData=checkTarget();
   let average=getAverage(sum);
@@ -492,15 +497,28 @@ function createChart(name,sum){
         }
       }
   });
-  myChart.canvas.parentNode.style.height = '400px';
-  myChart.canvas.parentNode.style.width = '1710px';
+  
   let xPos=myChart.config.data.datasets[1]._meta[globalX].dataset._children[0]._model.y;
   let targetPos=myChart.config.data.datasets[2]._meta[globalX].dataset._children[0]._model.y;
   globalX++;
-  // console.log(targetPos);
+
   setAverageY(xPos,average[11]);
   setTargetPos(targetPos,targetData[11]);
-  calculateAmounts();
+  calculateAmounts();  
+  
+  myChart.canvas.parentNode.style.height = '400px';
+  myChart.canvas.parentNode.style.width = 1700+'px';
+  updateChartWidth(myChart);
+}
+// ----------------------------------------------------------------------------------
+let updateChartWidth=(myChart)=>{
+  let width= window.innerWidth;console.log(width)
+  myChart.canvas.parentNode.style.width = width-200+'px';
+  window.addEventListener('resize', function(event){
+    ;
+    let width= window.innerWidth;console.log(width)
+    myChart.canvas.parentNode.style.width = width-200+'px';
+  });
 }
 
 let calculateAmounts=()=>{
@@ -593,4 +611,25 @@ let checkTarget=()=>{
       
   }
   return total;
+}
+
+let openActiveMenu=()=>{
+  let state=document.getElementById('activeNav').childNodes[1].id;
+  if(state=='closed'){
+    document.getElementById('activeList').style.transition='all 0.8s';
+    document.getElementById('activeNav').style.transition='all 0.8s';
+    document.getElementsByClassName('openActive')[0].style.transition='all 0.8s';
+    document.getElementById('activeList').style.width='510px';
+    document.getElementById('activeNav').style.width='510px';
+    document.getElementsByClassName('openActive')[0].style.marginLeft='338px';document.getElementById('activeNav').childNodes[1].id='open';
+  }else{
+    document.getElementById('activeList').style.transition='all 0.8s';
+    document.getElementById('activeNav').style.transition='all 0.8s';
+    document.getElementsByClassName('openActive')[0].style.transition='all 0.8s';
+    document.getElementById('activeList').style.width='170px';
+    document.getElementById('activeNav').style.width='170px';
+    document.getElementsByClassName('openActive')[0].style.marginLeft='0px';
+    document.getElementById('activeNav').childNodes[1].id='closed';
+  }
+  
 }

@@ -2,19 +2,179 @@
 body{
   font-family: Arial, Helvetica, sans-serif;
   background-image: linear-gradient(rgb(255, 255, 255),rgb(206, 206, 206));
+  padding: 0px;
+  margin: 0px;
 }
 
 
 /* Header */
 .header{
-    background-color:  rgb(156, 190, 179);
+    height: 80px;
+    /* background-color:  rgba(122, 134, 145, 0.219); */
+    /* background-image: linear-gradient(rgb(255, 255, 255),rgba(125, 165, 127, 0.733)); */
     text-align: center;
+    display: grid;
+    grid-template-rows: 1fr 36px;
+    padding: 0px;
+    margin: 0px;
+    padding-top: 10px;
+}
+
+#mainHeader{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  /* height: 20px; */
+}
+
+#searchBar{background-color: rgb(214, 214, 214);
+  height: 36px;
+  display: grid;
+  grid-template-columns:1fr 300px 1fr;
+}
+
+#navBar{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  margin-left: 180px;
+  text-align: center;
+  position: relative;
+}
+
+#navBar div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#navBar :hover {
+  background-color: rgb(161, 161, 161);
+}
+
+#navData{
+  height: 36px;
+  display: grid;
+  grid-template-columns: 240px 90px 100px 1fr;
+  text-align: center;
+}
+
+#searchBox{
+  height: 36px;
+}
+
+#searchBar h2{
+  padding: 0px;
+  margin: 0px;
+  padding-top: 5px;
+}
+
+/* Search */
+#search{
+  width: 200px;
+}
+
+#search{
+  width: 280px;
+  height: 30px;
+  font-size: 20px;
+  background-color: rgb(241, 241, 241);
+  border: 2px solid rgb(136, 136, 136);
+  border-radius: 10px 10px;
+  padding-left: 20px;
+}
+
+#search:focus {
+  outline:0;
+  background-color: rgb(255, 255, 255);
+}
+
+#result{
+  width: 280px;
+  margin-left: 10px;
+  border: 2px solid rgb(199, 199, 199);
+  border-top: 0px;
+  position:relative;
+  margin-top: -3px;
+}
+
+.searchResult{
+  position: static;
+  width: 280px;
+  height: 25px;
+  display: grid;
+  font-size: 15px;
+  grid-template-columns: 1fr 2fr;
+  background-color: rgb(255, 255, 255);
+}
+
+.searchResult div{
+  padding-left: 10px;
+  padding-top: 5px;
+  text-align: start;
+}
+
+.searchResult:hover{
+  background-color: rgb(199, 199, 199);
+}
+#form h2{
+  margin: 0px;
+  padding: 0px;
+  padding-top: 7px;
+  
+}
+
+#button{
+  margin-right: 20px;
 }
 
 /* Main section */
-.mainSection{
+#mainSection{
   display: grid;
   grid-template-columns: 173px 10fr 173px;
+  margin-left: 4px;
+  margin-top: 20px;
+}
+
+/* active list */
+#activeList{
+  width: 170px;
+  border-radius: 5px 0px 0px 5px;
+  border-top: 3px solid;
+  border-left: 3px solid;
+  border-right: 5px solid;
+  border-bottom: 3px solid;
+  background-color: rgba(145, 144, 144, 0.8);
+  z-index: 99;
+}
+
+#activeNav{
+  width: 170px;
+  height: 28px;
+  background-color: rgb(119, 135, 148);
+  padding: 3px 0px 3px 0px;
+  display: grid;
+  grid-template-columns: 137px 38px;
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+#activeNav h3{ 
+  font-size: 23px;
+  padding: 0px;
+  margin: 0px;
+}
+
+.openActive{
+  width: 30px;
+  height: 30px;
+}
+
+#dividendList{
+  width: 170px;
+  padding-left: 2px;
+  display: grid;
+  grid-template-rows:1fr 1fr 1fr ;
+  /* grid-template-columns: repeat(2,170px); */
 }
 
 /* Active ticker list */
@@ -25,7 +185,7 @@ body{
   padding: 3px 3px 3px 3px;
   margin: 0px 3px 3px 0px;
   font-size: 20px;
-  border: 3px solid;
+  border: 2px solid;
   border-radius: 5px;
 }
 
@@ -49,13 +209,13 @@ body{
 .calender{
     width:100%;
     height: 395px;
-    /* background-color: rgb(186, 228, 214); */
     background-color: rgb(255, 255, 255);
     margin-right: auto;
     display: grid;
     grid-template-rows: 10fr 1fr;
     border: 5px solid;
     border-radius: 5px;
+
 }
 
 
@@ -97,35 +257,16 @@ body{
     grid-template-columns: repeat(12,1fr);
     grid-template-rows: repeat(5,70px);
     text-align: center;
-    height: 50px;
+    height: 40px;
     /* margin-top: auto; */
 }
 
 /* Month Block */
 .monthBlock{
-    font-size: 30px;
-    margin: 6px 7px;
-    padding-top: 9px;
+    font-size: 25px;
+    margin: 7px 8px;
+    padding-top: 8px;
 }
-
-/* Form */
-#form{
-  height: 36px;
-  display: grid;
-  grid-template-columns: 2.3fr 300px 100px 200px 70px 70px 70px 287px;
-}
-
-#form h2{
-  margin: 0px;
-  padding: 0px;
-  padding-top: 7px;
-  
-}
-
-#button{
-  margin-right: 20px;
-}
-
 /* countdown */
 #countDown{
   font-size: 35px;
@@ -139,64 +280,14 @@ body{
   text-align: right;
 }
 
-/* Search */
-#search{
-  width: 200px;
 
-}
-
-#search{
-  width: 280px;
-  height: 30px;
-  font-size: 20px;
-  background-color: rgb(241, 241, 241);
-  border: 2px solid rgb(136, 136, 136);
-  border-radius: 10px 10px;
-  padding-left: 20px;
-}
-
-#search:focus {
-  outline:0;
-  background-color: rgb(255, 255, 255);
-}
-
-#result{
-  width: 280px;
-  margin-left: 10px;
-  border: 2px solid rgb(199, 199, 199);
-  border-top: 0px;
-  position:relative;
-  margin-top: -3px;
-  /* opacity: 0; */
-  /* visibility: hidden; */
-}
-
-.searchResult{
-  position: static;
-  width: 280px;
-  height: 25px;
-  display: grid;
-  font-size: 15px;
-  grid-template-columns: 1fr 2fr;
-  background-color: rgb(255, 255, 255);
-
-}
-
-.searchResult div{
-  padding-left: 10px;
-  padding-top: 5px;
-}
-
-.searchResult:hover{
-  background-color: rgb(199, 199, 199);
-}
 
 /* Dividend section */
 .dividendSection{
   width:82%;
   height: 400px;
   background-color: rgb(255, 255, 255);
-  margin-left: 175px;
+  margin-left: 179px;
   margin-right: auto;
   display: grid;
   /* grid-template-rows: 1fr 10fr; */
@@ -205,25 +296,26 @@ body{
 
 .container{
   height: 100px;
+  width: 300px;
 }
 
 #average{
   position: initial;
   height: 55px;
-  width: 190px;
-  margin-left: auto;
-  margin-right: -39px;
+  width: 50px;
+  margin-left: 1565px;
+  /* margin-right: -39px; */
   color: rgba(55, 99, 232, 0.9);
 }
 
 #averageDivPoint{
   position: absolute;
   height: 35px;
-  width: 165px;
+  width: 90px;
   font-size: 33px;
-  margin-left: auto;
-  right: 0px;
-  margin-right: -25px;
+  margin-left:20px; 
+  /* right: 0px; */
+  margin-right: 205px;
   /* background-color: rgba(25, 140, 232, 0.9);
   border-radius: 95px 5px 0px 90px; */
 }
@@ -239,14 +331,14 @@ body{
 #targetArrow{
   position: absolute;
   color: rgba(345, 129, 132, 0.9);
-  margin-left:146px;
+  margin-left:-30px;
 }
 
 /* Targets */
 #targets{
   position:relative;
   margin-top: -400px;
-  margin-left: -180px;
+  margin-left: -176px;
   z-index: 99;
   width: 170px;
 }
