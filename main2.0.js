@@ -46,24 +46,33 @@ function loadData(xhttp) {
         data[key].isOn=false;
         data[key].position=[];
     }
+    // create Dividend Lists
+    createDividendLists();
     // Create data blocks
     createDataBlocks();
     // Create Month blocks
     createMonthBlocks();
     // Listen to searchbox
     autocomplete();
-    for(var i=0;i<5;i++){
-          let tickers=['CTY1S','INVEST','HOIVA','ROVIO','OLVAS','CTY1S'];
-          createDivDates(tickers[i]);
-        }
+
+    let i=0;
+    for(var key in data){
+      createDivDates(key);
+      if(i==40){
+        break;
+      }
+      i++;
+    }
     // Listen dividend goal inputs
     dividendTargets();
     calculateTotal();
-    createChart(0,0)
+    createChart(monthTrack.name,monthTrack.sum)
+    // Set overflow to start at the bottom
+    overFlowBottom();
+    
 }
 
 let dividendTargets=()=>{
-  // console.log('testi')
   let monthGoal=document.getElementById('targetMonth');
   let yearGoal=document.getElementById('targetYear');
   // Remove text from input
@@ -120,7 +129,7 @@ function createSumBlocks(){
 }
 
 function createDataBlocks(){
-  for(var i=4;i>=0;i--){
+  for(var i=30;i>=0;i--){
     for(var a=0;a<12;a++){
         let newDiv = document.createElement('div');
         newDiv.className = "monthBlock";
@@ -158,6 +167,18 @@ function createDivDates(ticker){
     addTickerTolist(ticker);
     getNextDividend();
     // createColors();   
+    overFlowBottom();
+}
+
+let createDividendLists=()=>{
+  for(var i=0;i<10;i++){
+    let list=document.createElement('div');
+    list.className='tickerList';
+    list.id='tickerList.'+i;
+    list.style.zIndex=10-i;
+    let activeList=document.getElementById('dividendList');
+    activeList.appendChild(list);
+  } 
 }
 
 let addMonthBlockStyle=(selectedMonth,check)=>{
@@ -194,15 +215,16 @@ function addTickerTolist(tickerKey){
     let input=document.createElement('input',text.id);
     input.className='activeInput';
     input.addEventListener('input',()=>{calculateTotal()});
-
     let deleteButton=document.createElement('div');
     deleteButton.className='deleteButton';
     deleteButton.textContent='X';
     deleteButton.addEventListener('click',()=>{removeTicker(tickerKey)});
-    let list=document.getElementById('dividendList');
+    console.log(Math.floor((monthTrack.activeList.length-1)/10));
+    let list=document.getElementById('tickerList.'+Math.floor((monthTrack.activeList.length-1)/10));
     list.appendChild(text);
     text.appendChild(input);
     text.appendChild(deleteButton);
+    overFlowBottom();
 }
 
 function calculateTotal(){
@@ -244,7 +266,6 @@ function removeTicker(ticker){
   calculateTotal();
 }
 
-
 // Push tickers down if there are tickers on top
 function pushDown(position,ticker,i){
   document.getElementById(dividendData[ticker].position[i]).textContent="";
@@ -272,7 +293,13 @@ function pushDown(position,ticker,i){
   }
   let month=getMonth(dividendData[ticker].payDate[i]);
   monthTrack.count[month]--;
-  
+  overFlowBottom();
+  console.log(pos);
+  updateTickerList();
+}
+
+let updateTickerList=()=>{
+
 }
  
 function getMonth(date){
@@ -386,11 +413,6 @@ function autocomplete(){
 }
 
 function createChart(name,sum){
-  
-  // if(name==0){
-
-  // }
-
   let divTarget=false;
   let targetData=checkTarget();
   let average=getAverage(sum);
@@ -510,19 +532,18 @@ function createChart(name,sum){
   myChart.canvas.parentNode.style.width = 1700+'px';
   updateChartWidth(myChart);
 }
-// ----------------------------------------------------------------------------------
+
 let updateChartWidth=(myChart)=>{
-  let width= window.innerWidth;console.log(width)
+  let width= window.innerWidth;
   myChart.canvas.parentNode.style.width = width-200+'px';
   window.addEventListener('resize', function(event){
     ;
-    let width= window.innerWidth;console.log(width)
+    let width= window.innerWidth;
     myChart.canvas.parentNode.style.width = width-200+'px';
   });
 }
 
 let calculateAmounts=()=>{
-  console.log(monthTrack.sum);
   let total=0;
   for(var i=0;i<12;i++){
     total+=parseFloat(monthTrack.sum[i]);
@@ -547,13 +568,10 @@ let setTargetPos=(targetPos,targetData)=>{
   }else{
     percent=(percent*100).toFixed(2);
   }
-  // console.log(percent);
   if(targetPos==69||percent==NaN){
-    // console.log(percent);
     targetPoint.textContent='0%'
     arrow.style.marginTop=344+'px';
   }else{
-      console.log(percent);
       if(percent<=100){
         targetPoint.textContent=percent+'%';
         arrow.style.marginTop=targetPos-12+'px';
@@ -615,21 +633,37 @@ let checkTarget=()=>{
 
 let openActiveMenu=()=>{
   let state=document.getElementById('activeNav').childNodes[1].id;
+  let count=((monthTrack.activeList.length-1)/10)+1;
+  console.log(monthTrack.activeList.length);
   if(state=='closed'){
-    document.getElementById('activeList').style.transition='all 0.8s';
-    document.getElementById('activeNav').style.transition='all 0.8s';
-    document.getElementsByClassName('openActive')[0].style.transition='all 0.8s';
-    document.getElementById('activeList').style.width='510px';
-    document.getElementById('activeNav').style.width='510px';
-    document.getElementsByClassName('openActive')[0].style.marginLeft='338px';document.getElementById('activeNav').childNodes[1].id='open';
+    document.getElementById('activeList').style.transition='all 0.6s';
+    document.getElementById('activeNav').style.transition='all 0.6s';
+    document.getElementsByClassName('openActive')[0].style.transition='all 0.6s';
+    document.getElementById('activeList').style.width=count*170+'px';
+    document.getElementById('activeNav').style.width=count*170+'px';
+    document.getElementsByClassName('openActive')[0].style.marginLeft=(count*170)-170+'px';document.getElementById('activeNav').childNodes[1].id='open';
+    for(var i=0;i<count;i++){
+      document.getElementById('tickerList.'+i).style.transition='all 0.6s';
+      document.getElementById('tickerList.'+i).style.marginLeft=170*i+'px';
+    }
   }else{
-    document.getElementById('activeList').style.transition='all 0.8s';
-    document.getElementById('activeNav').style.transition='all 0.8s';
-    document.getElementsByClassName('openActive')[0].style.transition='all 0.8s';
+    document.getElementById('activeList').style.transition='all 0.6s';
+    document.getElementById('activeNav').style.transition='all 0.6s';
+    document.getElementsByClassName('openActive')[0].style.transition='all 0.6s';
     document.getElementById('activeList').style.width='170px';
     document.getElementById('activeNav').style.width='170px';
     document.getElementsByClassName('openActive')[0].style.marginLeft='0px';
     document.getElementById('activeNav').childNodes[1].id='closed';
+    for(var i=0;i<count;i++){
+      console.log('tickerList.'+i);
+      document.getElementById('tickerList.'+i).style.transition='all 0.6s';
+      document.getElementById('tickerList.'+i).style.marginLeft='0px';
+    }
   }
-  
+}
+
+// Set overflow to bottom
+let overFlowBottom=()=>{
+  var div = document.getElementById("data");
+  div.scrollTop = div.scrollHeight;
 }
