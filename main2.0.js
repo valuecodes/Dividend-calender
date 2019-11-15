@@ -44,12 +44,11 @@ function loadData(xhttp) {
     for(var key in data){
         tickerList.push(key);
         data[key].isOn=false;
-        data[key].position=[];
     }
-    // create Dividend Lists
+    // create Dividend Lists on the left
     createDividendLists();
-    // Create data blocks
-    createDataBlocks();
+    // create month colums in the data char
+    createMonthColums();
     // Create Month blocks
     createMonthBlocks();
     // Listen to searchbox
@@ -58,9 +57,10 @@ function loadData(xhttp) {
     let i=0;
     for(var key in data){
       createDivDates(key);
-      if(i==40){
+      if(i==99){
         break;
       }
+      console.log(i);
       i++;
     }
     // Listen dividend goal inputs
@@ -69,7 +69,6 @@ function loadData(xhttp) {
     createChart(monthTrack.name,monthTrack.sum)
     // Set overflow to start at the bottom
     overFlowBottom();
-    
 }
 
 let dividendTargets=()=>{
@@ -114,10 +113,6 @@ let dividendTargets=()=>{
   });
 }
 
-let testit=(goal)=>{
-  console.log(goal)
-}
-
 // Craete Sum blocks
 function createSumBlocks(){
   for(var i=0;i<12;i++){
@@ -128,15 +123,17 @@ function createSumBlocks(){
   }
 }
 
-function createDataBlocks(){
-  for(var i=30;i>=0;i--){
-    for(var a=0;a<12;a++){
-        let newDiv = document.createElement('div');
-        newDiv.className = "monthBlock";
-        newDiv.id = 'month'+i+','+a;
-        let dataSection = document.getElementById('data');
-        dataSection.appendChild(newDiv);
-    }
+let createMonthColums=()=>{
+  for(var i=0;i<12;i++){
+    let newDiv = document.createElement('div');
+    newDiv.className = "monthColumn";
+    newDiv.id = 'monthC.'+i;
+    let dataSection = document.getElementById('data');
+    dataSection.appendChild(newDiv);
+    let topBlock=document.createElement('area');
+    // Top block is top part of month columns so tickers align at the bottom
+    topBlock.className='topBlock';
+    newDiv.appendChild(topBlock);
   }
 }
 
@@ -150,28 +147,25 @@ function createMonthBlocks(){
   }
 }
 
-
 function createDivDates(ticker){
-  // Append data to month Blocks
+    // Append data to month Blocks
         for(var i=0;i<dividendData[ticker].payDate.length;i++){
-          let text=document.createTextNode(ticker);
+          let div=document.createElement('div')
+          div.textContent=ticker;
+          div.className='monthB.'+ticker;
           let month=getMonth(dividendData[ticker].payDate[i]);
-          let selectedMonth=document.getElementById('month'+monthTrack.count[month]+','+month);
-          dividendData[ticker].position.push(selectedMonth.id);
-          selectedMonth.appendChild(text);
-          monthTrack.count[month]++;
-          addMonthBlockStyle(selectedMonth.id,'on');
+          let selectedMonth=document.getElementById('monthC.'+month);
+          selectedMonth.appendChild(div);
         } 
     dividendData[ticker].isOn=true;
     monthTrack.activeList.push(ticker);
     addTickerTolist(ticker);
-    getNextDividend();
-    // createColors();   
+    getNextDividend(); 
     overFlowBottom();
 }
 
 let createDividendLists=()=>{
-  for(var i=0;i<10;i++){
+  for(var i=0;i<11;i++){
     let list=document.createElement('div');
     list.className='tickerList';
     list.id='tickerList.'+i;
@@ -208,6 +202,7 @@ function createColors(){
 }
 
 function addTickerTolist(tickerKey){
+  console.log(tickerKey);
     let text=document.createElement('div');
     text.textContent=tickerKey;
     text.className='activeTicker';
@@ -219,7 +214,6 @@ function addTickerTolist(tickerKey){
     deleteButton.className='deleteButton';
     deleteButton.textContent='X';
     deleteButton.addEventListener('click',()=>{removeTicker(tickerKey)});
-    console.log(Math.floor((monthTrack.activeList.length-1)/10));
     let list=document.getElementById('tickerList.'+Math.floor((monthTrack.activeList.length-1)/10));
     list.appendChild(text);
     text.appendChild(input);
@@ -251,57 +245,46 @@ function calculateTotal(){
 }
 
 function removeTicker(ticker){
-  for(var i=0;i<dividendData[ticker].position.length;i++){
-    pushDown(dividendData[ticker].position[i],ticker,i);
-    
-  }
-  dividendData[ticker].position=[];
+  let monthBlocks=document.getElementsByClassName('monthB.'+ticker);
+  // Searches month blocks by class name and deletes
+  while (monthBlocks.length > 0) monthBlocks[0].remove();
   var elem = document.getElementById('active,'+ticker);
+  let parent=elem.parentNode.id.split('.')[1];
   elem.parentNode.removeChild(elem);
+  // Pushes rest of month blocks -1
+  listPushAndPop(parent);
   dividendData[ticker].isOn=false;
   monthTrack.activeList=monthTrack.activeList.filter(item => item !== ticker);
-  
   // createColors();
   getNextDividend();
   calculateTotal();
 }
 
-// Push tickers down if there are tickers on top
-function pushDown(position,ticker,i){
-  document.getElementById(dividendData[ticker].position[i]).textContent="";
-  let pos=dividendData[ticker].position[i].split('month')[1].split(',');
-  let currentPosiotion=0;
-
-  for(var a=pos[0];a<6;a++){
-    let topMonth=document.getElementById('month'+(parseInt(a)+1)+','+pos[1]);
-    let currentMonth = document.getElementById('month'+(parseInt(a))+','+pos[1]);
-    dividendData[ticker].position
-    currentMonth.textContent=topMonth.textContent;
-    if(topMonth.textContent==""){
-      addMonthBlockStyle(currentMonth.id,'off');
+let listPushAndPop=(listNumber)=>{
+  console.log('tickerList'+listNumber);
+  for(var i=listNumber;i<10;i++){
+    if(document.getElementById('tickerList.'+(parseInt(i)+1)).firstChild==null){
+      let state=document.getElementById('activeNav').childNodes[1].id;
+      let count=document.getElementById('tickerList.'+i).childElementCount;
+      if(state=='open'&&count==0){
+        document.getElementById('activeList').style.transition='all 0.6s';
+        document.getElementById('activeNav').style.transition='all 0.6s';
+        document.getElementsByClassName('openActive')[0].style.transition='all 0.6s';
+        document.getElementById('activeList').style.width=i*170+'px';
+        document.getElementById('activeNav').style.width=i*170+'px';
+        document.getElementsByClassName('openActive')[0].style.marginLeft=(i*170)-170+'px';
+      }
       break;
     }
-    for(var b=0;b<dividendData[currentMonth.textContent].position.length;b++){
-      if(dividendData[currentMonth.textContent].position[b].split(',')[1]==currentMonth.id.split(',')[1]){
-        dividendData[currentMonth.textContent].position[b]=currentMonth.id;
-        if(topMonth==""){
-          addMonthBlockStyle(topMonth.id,'off');
-        }
-      }
-    }
-    currentPosiotion++;
+    list=document.getElementById('tickerList.'+i);
+    element=document.getElementById('tickerList.'+(parseInt(i)+1)).firstChild;
+    document.getElementById('tickerList.'+(parseInt(i)+1)).firstChild.remove();
+    list.appendChild(element);
   }
-  let month=getMonth(dividendData[ticker].payDate[i]);
-  monthTrack.count[month]--;
-  overFlowBottom();
-  console.log(pos);
-  updateTickerList();
+
+  
 }
 
-let updateTickerList=()=>{
-
-}
- 
 function getMonth(date){
     month=date.split('.');
     return month[1]-1;
@@ -318,12 +301,12 @@ function getNextDividend(){
       i=0;
       year++;
     }
+    // console.log(month);-----------------------------------------------------------------
     if(monthTrack.count[i]>0){
       let companyName=document.getElementById('month0,'+i).textContent;
       let date=dividendData[companyName].payDate[0].split('.');  
       let endtime = (date[1]+' '+date[0]+' '+year); 
       getTimeRemaining(endtime)
-      
       flag=true;
      break;
     }
@@ -395,11 +378,6 @@ function autocomplete(){
     var listen = function() {
       var ticker = this.firstChild.textContent;
       if(dividendData[ticker].isOn==false){
-
-        // for(var i=0;i<5;i++){
-        //   let tickers=['CTY1S','INVEST','HOIVA','ROVIO','OLVAS','CTY1S'];
-        //   createDivDates(tickers[i]);
-        // }
         createDivDates(ticker);
       }
       document.getElementById('search').value='';
@@ -634,7 +612,10 @@ let checkTarget=()=>{
 let openActiveMenu=()=>{
   let state=document.getElementById('activeNav').childNodes[1].id;
   let count=((monthTrack.activeList.length-1)/10)+1;
-  console.log(monthTrack.activeList.length);
+  count=Math.floor(count);
+  if(count==0){count=1};
+  console.log(count);
+  console.log(state);
   if(state=='closed'){
     document.getElementById('activeList').style.transition='all 0.6s';
     document.getElementById('activeNav').style.transition='all 0.6s';
@@ -655,7 +636,6 @@ let openActiveMenu=()=>{
     document.getElementsByClassName('openActive')[0].style.marginLeft='0px';
     document.getElementById('activeNav').childNodes[1].id='closed';
     for(var i=0;i<count;i++){
-      console.log('tickerList.'+i);
       document.getElementById('tickerList.'+i).style.transition='all 0.6s';
       document.getElementById('tickerList.'+i).style.marginLeft='0px';
     }
@@ -664,6 +644,8 @@ let openActiveMenu=()=>{
 
 // Set overflow to bottom
 let overFlowBottom=()=>{
-  var div = document.getElementById("data");
-  div.scrollTop = div.scrollHeight;
+  for(var i=0;i<12;i++){
+    var div = document.getElementById("monthC."+i);
+    div.scrollTop = div.scrollHeight
+  };
 }

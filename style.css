@@ -147,7 +147,7 @@ body{
   border-left: 3px solid;
   border-right: 5px solid;
   border-bottom: 3px solid;
-  background-color: rgba(145, 144, 144, 0.8);
+  background-color: rgba(145, 144, 144, 1);
   z-index: 10;
 }
 
@@ -212,7 +212,6 @@ position: absolute;
   border-radius: 2px;
   font-size: 20px;
   text-align: center;
-  
 }
 
 /* Calender */
@@ -262,19 +261,48 @@ position: absolute;
 .data{
     display: grid;
     grid-template-columns: repeat(12,1fr);
-    grid-template-rows: repeat(5,70px);
     text-align: center;
     height: 1fr;
     overflow: auto;
 }
 
-/* Month Block */
-.monthBlock{
-  /* height: 30px; */
-    font-size: 30px;
-    margin: 3px 8px;
-    padding-top: 8px;
+.monthColumn{
+  /* height: 1000px; */
+  margin-top: 1fr;
+  display:grid;
+  grid-template-rows: 1fr;
+  overflow: auto;
 }
+
+.monthColumn::-webkit-scrollbar{
+  width: 10px;
+}
+.monthColumn::-webkit-scrollbar-track {
+  background : #424242;
+  border-radius: 10px;
+}
+.monthColumn::-webkit-scrollbar-track {
+  background : rgba(255,255,255,0.5);
+  border-radius: 10px;
+  box-shadow:  0 0 6px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+.monthColumn::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+.monthColumn div{
+  height: 30px;
+  font-size: 23px;
+  margin: 3px 4px;
+  padding: 7px 0px 3px 0px;
+  border: 3px solid;
+  border-radius: 5px;
+  background-color: rgba(128, 128, 128, 0.5);
+  overflow: -100px;
+}
+
 /* countdown */
 #countDown{
   font-size: 35px;
