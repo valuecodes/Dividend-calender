@@ -1,6 +1,6 @@
 var fs = require ('fs');
 
-let fileData= fs.readFileSync('data/finData.json');
+let fileData= fs.readFileSync('data/addNewDataHere.json');
 var words = JSON.parse(fileData);
 let toFile=new Array();
 let data={};
@@ -86,17 +86,18 @@ function toMonth(data){
 
 }
 
+console.log(data);
 
 // Save data to file
 
-// saveData(data);
+saveData(data);
 
-// function saveData(data){
-//     data= JSON.stringify(data);
-//     fs.writeFileSync('data/newData.json',data,finished); 
-// }
+function saveData(data){
+    data= JSON.stringify(data);
+    fs.writeFileSync('data/USATestData.json',data,finished); 
+}
 
-// function finished(err){
-//     console.log('all set.');
-// }
+function finished(err){
+    console.log('all set.');
+}
 
