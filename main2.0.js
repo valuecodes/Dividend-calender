@@ -56,11 +56,11 @@ function loadData(xhttp) {
 
     let i=0;
     for(var key in data){
-      createDivDates(key);
+      // Key = ticker, 10 = number of shares
+      addTickers(key,10);
       if(i==99){
         break;
       }
-      console.log(i);
       i++;
     }
     // Listen dividend goal inputs
@@ -147,19 +147,20 @@ function createMonthBlocks(){
   }
 }
 
-function createDivDates(ticker){
+function addTickers(ticker,numberOfShares){
     // Append data to month Blocks
         for(var i=0;i<dividendData[ticker].payDate.length;i++){
           let div=document.createElement('div')
           div.textContent=ticker;
           div.className='monthB.'+ticker;
+          div.id=ticker+'.'+dividendData[ticker].payDate[i];
           let month=getMonth(dividendData[ticker].payDate[i]);
           let selectedMonth=document.getElementById('monthC.'+month);
           selectedMonth.appendChild(div);
         } 
     dividendData[ticker].isOn=true;
     monthTrack.activeList.push(ticker);
-    addTickerTolist(ticker);
+    addTickerTolist(ticker,numberOfShares);
     getNextDividend(); 
     overFlowBottom();
 }
@@ -201,8 +202,7 @@ function createColors(){
   }
 }
 
-function addTickerTolist(tickerKey){
-  console.log(tickerKey);
+function addTickerTolist(tickerKey,numberOfShares){
     let text=document.createElement('div');
     text.textContent=tickerKey;
     text.className='activeTicker';
@@ -219,6 +219,7 @@ function addTickerTolist(tickerKey){
     text.appendChild(input);
     text.appendChild(deleteButton);
     overFlowBottom();
+    document.getElementById('active,'+tickerKey).children[0].value=numberOfShares;
 }
 
 function calculateTotal(){
@@ -261,7 +262,6 @@ function removeTicker(ticker){
 }
 
 let listPushAndPop=(listNumber)=>{
-  console.log('tickerList'+listNumber);
   for(var i=listNumber;i<10;i++){
     if(document.getElementById('tickerList.'+(parseInt(i)+1)).firstChild==null){
       let state=document.getElementById('activeNav').childNodes[1].id;
@@ -301,7 +301,14 @@ function getNextDividend(){
       i=0;
       year++;
     }
-    // console.log(month);-----------------------------------------------------------------
+    let currentMonth=document.getElementById('monthC.'+i).children;
+    if(currentMonth[1]!=null){
+        let dividendDate=document.getElementById('monthC.'+i).children[1].id.split('.');
+        let endtime=(dividendDate[2]+' '+dividendDate[1]+' '+year);
+        getTimeRemaining(endtime)
+        flag=true;
+        break;
+    }
     if(monthTrack.count[i]>0){
       let companyName=document.getElementById('month0,'+i).textContent;
       let date=dividendData[companyName].payDate[0].split('.');  
@@ -378,7 +385,7 @@ function autocomplete(){
     var listen = function() {
       var ticker = this.firstChild.textContent;
       if(dividendData[ticker].isOn==false){
-        createDivDates(ticker);
+        addTickers(ticker,"");
       }
       document.getElementById('search').value='';
       clearResults();
@@ -399,7 +406,6 @@ function createChart(name,sum){
       type: 'line',
       data: {
           labels: name,
-          
           datasets: [{
             label:'Dividends',
             data: sum,
@@ -497,15 +503,12 @@ function createChart(name,sum){
         }
       }
   });
-  
-  let xPos=myChart.config.data.datasets[1]._meta[globalX].dataset._children[0]._model.y;
-  let targetPos=myChart.config.data.datasets[2]._meta[globalX].dataset._children[0]._model.y;
-  globalX++;
 
-  setAverageY(xPos,average[11]);
-  setTargetPos(targetPos,targetData[11]);
+  // setAverageY(xPos,average[11]);
   calculateAmounts();  
   
+  setTargetChart(targetData[11]);
+
   myChart.canvas.parentNode.style.height = '400px';
   myChart.canvas.parentNode.style.width = 1700+'px';
   updateChartWidth(myChart);
@@ -535,50 +538,6 @@ let calculateAmounts=()=>{
   ' €';
 }
 
-let setTargetPos=(targetPos,targetData)=>{
-  let average=document.getElementById('averageDivPoint').textContent;
-  let arrow=document.getElementById('targetArrow')
-  let percent=average.split(' ')[0]/targetData;
-  let targetPoint=document.getElementById('targetPoint');
-  
-  if((percent*100).toFixed(2)==isNaN||(percent*100).toFixed(2)==Infinity){
-    percent=0;
-  }else{
-    percent=(percent*100).toFixed(2);
-  }
-  if(targetPos==69||percent==NaN){
-    targetPoint.textContent='0%'
-    arrow.style.marginTop=344+'px';
-  }else{
-      if(percent<=100){
-        targetPoint.textContent=percent+'%';
-        arrow.style.marginTop=targetPos-12+'px';
-      }else{
-        targetPoint.textContent='Target reached';
-        arrow.style.marginTop=targetPos-12+'px';
-      }    
-  }
-  if(targetPoint.textContent=='Target NaN%'||targetData==0){
-    targetPoint.textContent='0%';
-  }
-}
-
-let setAverageY=(xPos,number)=>{
-  let average=document.getElementById('average');
-  let averageDivPoint=document.getElementById('averageDivPoint');
-  if(xPos<200){
-    average.style.marginTop=-73+'px';
-    averageDivPoint.style.marginTop=10+'px';
-    document.getElementById('averageDivPoint').textContent=0+' €';
-  }else{
-    average.style.marginTop=-429+xPos+'px';
-    // averageDivPoint.style.marginTop=-355+xPos+'px';
-    if(number.toString().length>7){
-      number=Math.round(number);
-    }
-    document.getElementById('averageDivPoint').textContent=number+' €';
-  }
-}
 
 // Get average for average line 
 let getAverage=(data)=>{
@@ -614,8 +573,6 @@ let openActiveMenu=()=>{
   let count=((monthTrack.activeList.length-1)/10)+1;
   count=Math.floor(count);
   if(count==0){count=1};
-  console.log(count);
-  console.log(state);
   if(state=='closed'){
     document.getElementById('activeList').style.transition='all 0.6s';
     document.getElementById('activeNav').style.transition='all 0.6s';
@@ -648,4 +605,86 @@ let overFlowBottom=()=>{
     var div = document.getElementById("monthC."+i);
     div.scrollTop = div.scrollHeight
   };
+}
+
+// Set target chart
+let setTargetChart=(targetMonth)=>{
+  let currentMonth=document.getElementById('amountMonth').textContent.split(" ")[0].split(':')[1];
+  currentMonth=parseFloat(currentMonth);
+  let percent=currentMonth/targetMonth;
+  percent=percent*100;
+  let full=100;
+  let targetPoint=document.getElementById('targetPoint');
+  document.getElementById('targetPoint').style.paddingTop='65px';
+  document.getElementById('targetPoint').style.textAlign='center';
+  document.getElementById('targetPoint').style.fontSize='30px';
+  if(!percent||percent==Infinity){
+    targetPoint.textContent='0%';
+    full=100;
+    percent=0;
+  }else{
+    if(percent>100){console.log(percent);
+      targetPoint.textContent='Target reached';
+      full=0;
+      percent=100;
+      document.getElementById('targetPoint').style.paddingTop='71px';
+      document.getElementById('targetPoint').style.paddingRight='8px';
+      document.getElementById('targetPoint').style.fontSize='17px';
+    }else{
+      targetPoint.textContent=percent.toFixed(2)+'%';
+      full=full-percent;
+    }
+  }
+  
+  console.log(full);
+  
+  console.log(percent);
+  // let ctt= document.getElementById('targetChart');
+
+  var ctt = document.getElementById('targetChart').getContext('2d');
+  
+  var targetChart = new Chart(ctt, {
+      type: 'doughnut',
+      data: {
+          datasets: [{
+              backgroundColor: ['rgba(275, 40, 32, 0.9)','rgba(25, 40, 32, 0.3)'],
+              borderColor: 'rgba(5,9, 2, 0.9)',
+              data: [percent,100-percent],
+              weight:2
+          }],
+      },
+      options: {
+        cutoutPercentage: 85,
+        maintainAspectRatio : false
+      }
+  });
+
+  targetChart.canvas.parentNode.style.height = '165px';
+  // targetChart.canvas.parentNode.style.width = '155px';
+
+  // let average=document.getElementById('averageDivPoint').textContent;
+  // let arrow=document.getElementById('targetArrow')
+  // let percent=average.split(' ')[0]/targetData;
+  // let targetPoint=document.getElementById('targetPoint');
+  
+  // if((percent*100).toFixed(2)==isNaN||(percent*100).toFixed(2)==Infinity){
+  //   percent=0;
+  // }else{
+  //   percent=(percent*100).toFixed(2);
+  // }
+  // if(targetPos==69||percent==NaN){
+  //   targetPoint.textContent='0%'
+  //   arrow.style.marginTop=344+'px';
+  // }else{
+  //     if(percent<=100){
+  //       targetPoint.textContent=percent+'%';
+  //       arrow.style.marginTop=targetPos-12+'px';
+  //     }else{
+  //       targetPoint.textContent='Target reached';
+  //       arrow.style.marginTop=targetPos-12+'px';
+  //     }    
+  // }
+  // if(targetPoint.textContent=='Target NaN%'||targetData==0){
+  //   targetPoint.textContent='0%';
+  // }
 }

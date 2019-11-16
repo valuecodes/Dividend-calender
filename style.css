@@ -319,71 +319,38 @@ position: absolute;
 /* Dividend section */
 .dividendSection{
   width:1fr;
-  margin-right: 170px;
   height: 400px;
   background-color: rgb(255, 255, 255);
-  margin-left: 182px;
   display: grid;
-  /* grid-template-rows: 1fr 10fr; */
-  grid-template-columns: 175 1fr;
+  grid-template-columns: 176px 1fr 1fr;
+  margin-left: 5px;
 }
 
 .container{
   height: 100px;
   width: 300px;
+  /* background-color: aliceblue; */
 }
 
 .cover{
   position: absolute;
   width:90%;
-  margin-left: -150px;
+  /* margin-left:170px; */
   height: 400px;
   background-color: rgba(233, 233, 233,0);
   z-index:12;
-
 }
 
-#average{
-  position: relative;
-  left:90%;
-  height: 55px;
-  width: 50px;
-  /* margin-right: 1000px; */
-  /* margin-right: -39px; */
-  color: rgba(55, 99, 232, 0.9);
-}
-
-#averageDivPoint{
-  position: absolute;
-  height: 35px;
-  width: 90px;
-  font-size: 33px;
-  margin-left:20px; 
-  margin-right: 190px;
-  margin-top: 10px;
-}
-
-#targetPoint{
-  margin-top: 10px;
-  font-size: 38px;
-  text-align: center;
-  margin:0px 0px 0px -21px;
-  padding: 0px;
-}
-
-#targetArrow{
-  position: absolute;
-  color: rgba(345, 129, 132, 0.9);
-  margin-left:-30px;
-}
 
 /* Targets */
 #targets{
-  position:relative;
-  margin-top: -400px;
-  margin-left: -176px;
+  margin-top: 10px;
+  padding-left: 3px;
+  padding-bottom: 180px;
   z-index: 13;
-  width: 170px;
+  border: 3px solid;
+  border-radius: 5px;
+  background-color: rgba(211, 211, 211, 0.808);
 }
 
 .targetInput{
@@ -391,7 +358,17 @@ position: absolute;
   font-size: 15px;
   border: 2px solid rgba(345, 129, 132, 0.9);
   margin-top: 3px;
-  width: 80%;
+  width: 94%;
+}
+
+#targetPoint{
+  text-align: center;
+  margin-top: auto;
+  padding-top: 65px;
+  font-size: 30px;
+  /* padding-top: 71px;
+  padding-right:8px;
+  font-size: 17px; */
 }
 
 #myTarget{
@@ -400,35 +377,25 @@ position: absolute;
   margin: 0px;
 }
 
+#targetChart{  
+  position: absolute;
+  margin-left: -3px;
+  margin-top: -5px;
+}
+
 #currentStatus{
   margin: 0px;
   padding: 12px 0px;
+  /* text-align: center; */
 }
 
-/* Arrow */
-i {
-  border: solid;
-  border-width: 0 5px 5px 0;
-  display: inline-block;
-  padding: 10px;
-}
-
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-.left {
-  transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
-}
-
-.up {
-  transform: rotate(-135deg);
-  -webkit-transform: rotate(-135deg);
-}
-
-.down {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
+.dividendAmounts{
+  margin-left: -188px;
+  margin-top: 170px;
+  padding-left: 3px;
+  width: 170px;
+  border: 3px solid rgba(55, 99, 232, 0.9);
+  height: 187px;
+  border-radius: 5px;
+  background-color: rgba(25, 140, 232, 0.3);
 }
