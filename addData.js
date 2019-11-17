@@ -6,20 +6,27 @@ let toFile=new Array();
 let data={};
 
 class companies{
-    constructor(name,exDiv,payDate,dividend,country){
+    constructor(name,exDiv,payDate,dividend,country,type){
         this.name = name;
         this.exDiv = [exDiv];
         this.payDate = [payDate];
         this.dividend = [dividend];
         this.country=country;
+        this.type=type;
     }
 }
 
-for(var i=0;i<words.length;i++){
+let country=undefined;
 
+for(var i=0;i<words.length;i++){
+    if(words[i].length==1){
+        country=words[i];
+    }
+    // console.log(country);
     let company=words[i][0].split('\t')
     if(company[0]==''){
-        let name=company[1].split(' ')[0];
+        // console.log(company);
+        let name=company[1].split('(')[0];
         let ticker=company[1].split('(');
         ticker=ticker[1].split(')')[0];
         let company1= words[i][1].split('\t');
@@ -34,9 +41,33 @@ for(var i=0;i<words.length;i++){
             data[ticker].payDate.push(payDate)
             data[ticker].dividend.push(dividend)
         }else{
-            data[ticker] = new companies(name,exDiv,payDate,dividend,'FIN');
+            data[ticker] = new companies(name,exDiv,payDate,dividend,country);
         }     
     }
+}
+
+for(key in data){
+    let type = getType(data[key].payDate.length);
+    data[key].type=type;
+}
+
+function getType(len){
+    let type=undefined;
+    switch (len){
+        case 1:
+            type='Annual';
+            break;
+        case 2:
+            type='Semi-Annual';
+            break;
+        case 4:
+            type='Quarterly';
+            break;
+        case 12:
+            type='Monthly';
+            break;
+    }
+    return type;
 }
 
 // Translate month text num
@@ -83,7 +114,6 @@ function toMonth(data){
             num=NaN;
     }
     return num;
-
 }
 
 console.log(data);
@@ -94,7 +124,7 @@ saveData(data);
 
 function saveData(data){
     data= JSON.stringify(data);
-    fs.writeFileSync('data/USATestData.json',data,finished); 
+    fs.writeFileSync('data/mainData.json',data,finished); 
 }
 
 function finished(err){

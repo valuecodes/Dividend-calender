@@ -25,7 +25,7 @@ for(var i=1;i<monthsName.length;i++){
 }
 
 // Get dat from Git Hub
-loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/newData.json", loadData);
+loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/USATestData.json", loadData);
 function loadDoc(url, cFunction) {
   var xhttp;
   xhttp=new XMLHttpRequest();
@@ -58,7 +58,7 @@ function loadData(xhttp) {
     for(var key in data){
       // Key = ticker, 10 = number of shares
       addTickers(key,10);
-      if(i==99){
+      if(i==1){
         break;
       }
       i++;
