@@ -1,18 +1,30 @@
-let tickerList=[];
 let dividendData;
+let activeList={};
 let monthsName=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-let isEmpty=true;
-let globalX=0;
 
 class monthStack{
-  constructor(name,number,count,sum,activeList){
+  constructor(name,number,count,sum,activeTickers){
     this.name = [name];
     this.number=[number];
     this.count = [count];
     this.sum = [sum];
-    this.activeList = activeList;
+    this.activeTickers = activeTickers;
   }
 }
+
+class currentTicker{
+  constructor(ticker,numberOfShares){
+    this.ticker=ticker;
+    this.numberOfShares=numberOfShares;
+  }
+}
+
+class portFolios{
+
+}
+
+
+// let currentTicker=new currentPortfolio('empty',0);
 
 // create month data
 let monthTrack = new monthStack(monthsName[0],0,0,0,[]);
@@ -25,7 +37,7 @@ for(var i=1;i<monthsName.length;i++){
 }
 
 // Get dat from Git Hub
-loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/USATestData.json", loadData);
+loadDoc("https://raw.githubusercontent.com/valuecodes/Dividend-calender/master/data/mainData.json", loadData);
 function loadDoc(url, cFunction) {
   var xhttp;
   xhttp=new XMLHttpRequest();
@@ -42,7 +54,6 @@ function loadData(xhttp) {
     let data=JSON.parse(xhttp.responseText);
     dividendData=data;
     for(var key in data){
-        tickerList.push(key);
         data[key].isOn=false;
     }
     // create Dividend Lists on the left
@@ -54,15 +65,19 @@ function loadData(xhttp) {
     // Listen to searchbox
     autocomplete();
 
+    // Generate Tickers
+
     let i=0;
     for(var key in data){
       // Key = ticker, 10 = number of shares
       addTickers(key,10);
-      if(i==1){
+      if(i==20){
         break;
       }
       i++;
     }
+
+
     // Listen dividend goal inputs
     dividendTargets();
     calculateTotal();
@@ -159,7 +174,13 @@ function addTickers(ticker,numberOfShares){
           selectedMonth.appendChild(div);
         } 
     dividendData[ticker].isOn=true;
-    monthTrack.activeList.push(ticker);
+    monthTrack.activeTickers.push(ticker);
+
+
+    // activeList[ticker]=new currentTicker(ticker);
+    // console.log(activeList);
+    
+    
     addTickerTolist(ticker,numberOfShares);
     getNextDividend(); 
     overFlowBottom();
@@ -171,8 +192,8 @@ let createDividendLists=()=>{
     list.className='tickerList';
     list.id='tickerList.'+i;
     list.style.zIndex=10-i;
-    let activeList=document.getElementById('dividendList');
-    activeList.appendChild(list);
+    let activeTickers=document.getElementById('dividendList');
+    activeTickers.appendChild(list);
   } 
 }
 
@@ -214,20 +235,26 @@ function addTickerTolist(tickerKey,numberOfShares){
     deleteButton.className='deleteButton';
     deleteButton.textContent='X';
     deleteButton.addEventListener('click',()=>{removeTicker(tickerKey)});
-    let list=document.getElementById('tickerList.'+Math.floor((monthTrack.activeList.length-1)/10));
+    let list=document.getElementById('tickerList.'+Math.floor((monthTrack.activeTickers.length-1)/10));
     list.appendChild(text);
     text.appendChild(input);
     text.appendChild(deleteButton);
     overFlowBottom();
     document.getElementById('active,'+tickerKey).children[0].value=numberOfShares;
-}
+
+
+    // activeList[tickerKey].numberOfShares=numberOfShares;
+
+
+  }
 
 function calculateTotal(){
   for(var i=0;i<12;i++){
     monthTrack.sum[i]=0;
   }
-  for(var i=0;i<monthTrack.activeList.length;i++){
-      let ticker=monthTrack.activeList[i];
+  for(var i=0;i<monthTrack.activeTickers.length;i++){
+      let ticker=monthTrack.activeTickers[i];
+      console.log(ticker);
       let len=dividendData[ticker].dividend.length;
       for(var a=0;a<len;a++){
         let perShare=dividendData[ticker].dividend[a];
@@ -243,6 +270,7 @@ function calculateTotal(){
       }
     }
     createChart(monthTrack.name,monthTrack.sum);
+
 }
 
 function removeTicker(ticker){
@@ -255,7 +283,7 @@ function removeTicker(ticker){
   // Pushes rest of month blocks -1
   listPushAndPop(parent);
   dividendData[ticker].isOn=false;
-  monthTrack.activeList=monthTrack.activeList.filter(item => item !== ticker);
+  monthTrack.activeTickers=monthTrack.activeTickers.filter(item => item !== ticker);
   // createColors();
   getNextDividend();
   calculateTotal();
@@ -570,7 +598,7 @@ let checkTarget=()=>{
 
 let openActiveMenu=()=>{
   let state=document.getElementById('activeNav').childNodes[1].id;
-  let count=((monthTrack.activeList.length-1)/10)+1;
+  let count=((monthTrack.activeTickers.length-1)/10)+1;
   count=Math.floor(count);
   if(count==0){count=1};
   if(state=='closed'){
@@ -635,12 +663,6 @@ let setTargetChart=(targetMonth)=>{
       full=full-percent;
     }
   }
-  
-  console.log(full);
-  
-  console.log(percent);
-  // let ctt= document.getElementById('targetChart');
-
   var ctt = document.getElementById('targetChart').getContext('2d');
   
   var targetChart = new Chart(ctt, {
@@ -658,33 +680,14 @@ let setTargetChart=(targetMonth)=>{
         maintainAspectRatio : false
       }
   });
-
   targetChart.canvas.parentNode.style.height = '165px';
-  // targetChart.canvas.parentNode.style.width = '155px';
+}
 
-  // let average=document.getElementById('averageDivPoint').textContent;
-  // let arrow=document.getElementById('targetArrow')
-  // let percent=average.split(' ')[0]/targetData;
-  // let targetPoint=document.getElementById('targetPoint');
-  
-  // if((percent*100).toFixed(2)==isNaN||(percent*100).toFixed(2)==Infinity){
-  //   percent=0;
-  // }else{
-  //   percent=(percent*100).toFixed(2);
-  // }
-  // if(targetPos==69||percent==NaN){
-  //   targetPoint.textContent='0%'
-  //   arrow.style.marginTop=344+'px';
-  // }else{
-  //     if(percent<=100){
-  //       targetPoint.textContent=percent+'%';
-  //       arrow.style.marginTop=targetPos-12+'px';
-  //     }else{
-  //       targetPoint.textContent='Target reached';
-  //       arrow.style.marginTop=targetPos-12+'px';
-  //     }    
-  // }
-  // if(targetPoint.textContent=='Target NaN%'||targetData==0){
-  //   targetPoint.textContent='0%';
-  // }
+let getCurrentPortfolio=()=>{
+  for(var i=0;i<monthTrack.activeTickers.length;i++){
+    let ticker=monthTrack.activeTickers[i];
+    let shares=document.getElementById('active,'+monthTrack.activeTickers[i]).children[0].value;
+    activeList[ticker]=new currentTicker(ticker,shares);
+  }
+  console.log(activeList);
 }

@@ -211,28 +211,6 @@ function checkActive(ticker){
   return true;
 }
 
-
-// setInterval(function(){
-//   if(isEmpty==false){
-//     var clock = document.getElementById('countDown');
-//     clock.innerHTML = getCurrentTime();
-//   }
-  
-// }, 1000);
-
-// function getCurrentTime() {
-//   var currentDate = new Date();
-//   var hours = currentDate.getHours() < 10 ? '0' + currentDate.getSeconds() : currentDate.getHours();
-//   hours === 0 ? hours = 12 : hours = hours;
-//   var minutes = currentDate.getMinutes();
-//   var seconds = currentDate.getSeconds() < 10 ? '0' + currentDate.getSeconds() : currentDate.getSeconds();
-//   var date = currentDate.getDate();
-//   var month = currentDate.getMonth(); 
-//   getNextDividend(month,date);
-//   var currentTime ='Day '+date+' Month '+month+' Hours '+ hours + ' Min ' + minutes + ' Sec ' + seconds;
-//   return currentTime;
-// }
-
 function getNextDividend(){
   var currentDate = new Date();
   var date = currentDate.getDate();
