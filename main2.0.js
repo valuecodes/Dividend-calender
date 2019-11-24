@@ -64,9 +64,7 @@ function loadData(xhttp) {
     createMonthBlocks();
     // Listen to searchbox
     autocomplete();
-
     // Generate Tickers
-
     dividendData["CIBUS"]={
       "name":"Cibus Nordic Real Estate ",
       "exDiv":["30.12.2019","20.9.2019","19.6.2019","28.3.2019"],
@@ -74,9 +72,10 @@ function loadData(xhttp) {
       "dividend":["0.21 ","0.21 ","0.21 ","0.21"],
       "country":["FIN"],
       "type":"Quareterly"};
-      
-      addLocalList();
-      console.log(localStorage);
+    
+    // Add tickers from localStorage
+    addLocalList();
+
       // Listen dividend goal inputs
     dividendTargets();
     calculateTotal();
@@ -716,16 +715,32 @@ let getCurrentPortfolio=()=>{
 
 let getOriginal=()=>{
 
+  let restore={};
+
+  //Add your portfolio to localList.json to use "Restore original" button
+  // Example format: 
+  
+  // {
+  //   Ticker:sharecount
+  // }
+  
+  // {
+  //   "TGT":100,
+  //   "TEL":100,
+  //   "YUM":100
+  // }
 
 
-  clearPortfolio();
-
-  let originalist=[];
-
-  for(var i=0;i<originalist.length;i++){
-    addTickers(originalist[i][0],originalist[i][1]);
-  }
-  calculateTotal();
+  fetch('localList.json')
+  .then(response => response.json())
+  .then(jsonResponse => {
+    restore=jsonResponse;
+    clearPortfolio();
+    for(var key in restore){
+      addTickers(key,restore[key]);
+    }
+    calculateTotal();
+  })
 }
 
 let clearPortfolio=()=>{
