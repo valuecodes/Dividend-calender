@@ -67,23 +67,32 @@ function loadData(xhttp) {
 
     // Generate Tickers
 
-    let i=0;
-    for(var key in data){
-      // Key = ticker, 10 = number of shares
-      addTickers(key,10);
-      if(i==20){
-        break;
-      }
-      i++;
-    }
-
-
-    // Listen dividend goal inputs
+    dividendData["CIBUS"]={
+      "name":"Cibus Nordic Real Estate ",
+      "exDiv":["30.12.2019","20.9.2019","19.6.2019","28.3.2019"],
+      "payDate":["01.10.2020","30.9.2019","28.6.2019","5.4.2019"],
+      "dividend":["0.21 ","0.21 ","0.21 ","0.21"],
+      "country":["FIN"],
+      "type":"Quareterly"};
+      
+      addLocalList();
+      console.log(localStorage);
+      // Listen dividend goal inputs
     dividendTargets();
     calculateTotal();
     createChart(monthTrack.name,monthTrack.sum)
     // Set overflow to start at the bottom
     overFlowBottom();
+    listSaved();
+}
+
+let addLocalList=()=>{
+  for(var i=0;i<localStorage.length;i++){
+    let localData = localStorage.getItem("company"+i);
+    let ticker=localData.split('.')[0];
+    let shares=localData.split('.')[1];
+    addTickers(ticker,shares);
+  }
 }
 
 let dividendTargets=()=>{
@@ -145,7 +154,7 @@ let createMonthColums=()=>{
     newDiv.id = 'monthC.'+i;
     let dataSection = document.getElementById('data');
     dataSection.appendChild(newDiv);
-    let topBlock=document.createElement('area');
+    let topBlock=document.createElement('p');
     // Top block is top part of month columns so tickers align at the bottom
     topBlock.className='topBlock';
     newDiv.appendChild(topBlock);
@@ -178,7 +187,6 @@ function addTickers(ticker,numberOfShares){
 
 
     // activeList[ticker]=new currentTicker(ticker);
-    // console.log(activeList);
     
     
     addTickerTolist(ticker,numberOfShares);
@@ -244,7 +252,7 @@ function addTickerTolist(tickerKey,numberOfShares){
 
 
     // activeList[tickerKey].numberOfShares=numberOfShares;
-
+    changesMade();
 
   }
 
@@ -254,7 +262,6 @@ function calculateTotal(){
   }
   for(var i=0;i<monthTrack.activeTickers.length;i++){
       let ticker=monthTrack.activeTickers[i];
-      console.log(ticker);
       let len=dividendData[ticker].dividend.length;
       for(var a=0;a<len;a++){
         let perShare=dividendData[ticker].dividend[a];
@@ -270,7 +277,7 @@ function calculateTotal(){
       }
     }
     createChart(monthTrack.name,monthTrack.sum);
-
+    changesMade();
 }
 
 function removeTicker(ticker){
@@ -287,6 +294,7 @@ function removeTicker(ticker){
   // createColors();
   getNextDividend();
   calculateTotal();
+  changesMade();
 }
 
 let listPushAndPop=(listNumber)=>{
@@ -331,16 +339,20 @@ function getNextDividend(){
     }
     let currentMonth=document.getElementById('monthC.'+i).children;
     if(currentMonth[1]!=null){
+        let count=document.getElementById('monthC.'+i).children.length;
         let dividendDate=document.getElementById('monthC.'+i).children[1].id.split('.');
         let endtime=(dividendDate[2]+' '+dividendDate[1]+' '+year);
-        getTimeRemaining(endtime)
-        flag=true;
-        break;
+        if(Number(endtime.split(" ")[1])>date){
+          getTimeRemaining(endtime)
+          flag=true;
+          break;
+        }
+        
     }
     if(monthTrack.count[i]>0){
       let companyName=document.getElementById('month0,'+i).textContent;
       let date=dividendData[companyName].payDate[0].split('.');  
-      let endtime = (date[1]+' '+date[0]+' '+year); 
+      let endtime = (date[1]+' '+date[0]+' '+year);
       getTimeRemaining(endtime)
       flag=true;
      break;
@@ -441,8 +453,8 @@ function createChart(name,sum){
           }, {
             label: 'Average',
             data: average,
-            borderColor:'rgba(55, 99, 232, 0.9)',
-            backgroundColor:'rgba(25, 140, 232, 0.7)',
+            borderColor:'rgba(55, 99, 232, 0.6)',
+            backgroundColor:'rgba(25, 140, 232, 0.3)',
             type: 'line'
         },
         {
@@ -512,13 +524,13 @@ function createChart(name,sum){
                 ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontFamily, 'normal', Chart.defaults.global.defaultFontFamily);
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'bottom';
-                ctx.font = '20px';
+                ctx.font = '20px bold';
                 this.data.datasets.forEach(function (dataset) {
                     for (var i = 0; i < dataset.data.length; i++) {
                         var model = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._model,
                             scale_max = dataset._meta[Object.keys(dataset._meta)[0]].data[i]._yScale.maxHeight;
                         ctx.fillStyle = '#444';
-                        ctx.font = "30px Helvetica";
+                        ctx.font = "25px ";
                         var y_pos = model.y - 5;
                         if ((scale_max - model.y) / scale_max >= 0.93)
                             y_pos = model.y + 30;
@@ -537,7 +549,7 @@ function createChart(name,sum){
   
   setTargetChart(targetData[11]);
 
-  myChart.canvas.parentNode.style.height = '400px';
+  myChart.canvas.parentNode.style.height = '390px';
   myChart.canvas.parentNode.style.width = 1700+'px';
   updateChartWidth(myChart);
 }
@@ -607,7 +619,8 @@ let openActiveMenu=()=>{
     document.getElementsByClassName('openActive')[0].style.transition='all 0.6s';
     document.getElementById('activeList').style.width=count*170+'px';
     document.getElementById('activeNav').style.width=count*170+'px';
-    document.getElementsByClassName('openActive')[0].style.marginLeft=(count*170)-170+'px';document.getElementById('activeNav').childNodes[1].id='open';
+    document.getElementsByClassName('openActive')[0].style.marginLeft=(count*170)-170+'px';
+    document.getElementById('activeNav').childNodes[1].id='open';
     for(var i=0;i<count;i++){
       document.getElementById('tickerList.'+i).style.transition='all 0.6s';
       document.getElementById('tickerList.'+i).style.marginLeft=170*i+'px';
@@ -651,7 +664,7 @@ let setTargetChart=(targetMonth)=>{
     full=100;
     percent=0;
   }else{
-    if(percent>100){console.log(percent);
+    if(percent>100){
       targetPoint.textContent='Target reached';
       full=0;
       percent=100;
@@ -684,10 +697,58 @@ let setTargetChart=(targetMonth)=>{
 }
 
 let getCurrentPortfolio=()=>{
+  let localStorageData=[];
+  let localStorageArray=[];
   for(var i=0;i<monthTrack.activeTickers.length;i++){
     let ticker=monthTrack.activeTickers[i];
     let shares=document.getElementById('active,'+monthTrack.activeTickers[i]).children[0].value;
     activeList[ticker]=new currentTicker(ticker,shares);
+    localStorageData[i]=ticker+'.'+shares;
+    localStorageArray.push(localStorageData[i]);
   }
-  console.log(activeList);
+
+  for(var i=0;i<50;i++){localStorage.removeItem("company"+i);}
+  for(var i=0;i<localStorageData.length;i++){
+    localStorage.setItem("company"+i,localStorageData[i]);
+  }
+  listSaved();
+}
+
+let getOriginal=()=>{
+
+
+
+  clearPortfolio();
+
+  let originalist=[];
+
+  for(var i=0;i<originalist.length;i++){
+    addTickers(originalist[i][0],originalist[i][1]);
+  }
+  calculateTotal();
+}
+
+let clearPortfolio=()=>{
+  let len = monthTrack.activeTickers.length;
+  for(var i=0;i<len;i++){
+    removeTicker(monthTrack.activeTickers[0]);
+  }
+  document.getElementById('activeList').style.transition='all 0.6s';
+        document.getElementById('activeNav').style.transition='all 0.6s';
+        document.getElementsByClassName('openActive')[0].style.transition='all 0.6s';
+        document.getElementById('activeList').style.width=170+'px';
+        document.getElementById('activeNav').style.width=170+'px';
+        document.getElementsByClassName('openActive')[0].style.marginLeft=0+'px';
+}
+
+let changesMade=()=>{
+  let button = document.getElementById('saveButton');
+  button.textContent='Save current list';
+  button.style.backgroundColor='red';
+}
+
+let listSaved=()=>{
+  let button = document.getElementById('saveButton');
+  button.textContent='Saved';
+  button.style.backgroundColor='rgb(161, 248, 79)';
 }

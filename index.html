@@ -13,10 +13,10 @@
         <h1 id="mainHeader">Dividend calender</h1>
         <div id="searchBar">
             <id id="navBar">
-                <div class="myPortFolios" onclick="getCurrentPortfolio()">My portfolios</div>
-                <div class="otherPortfolios">Other Portfolios</div>
-                <div class="search Dividends">Search stocks</div>
-                <div class="helper">Helper</div>
+                <button href="test" id="saveButton" class="myPortFolios" onclick="getCurrentPortfolio()">Saved</button>
+                <button class="otherPortfolios" onclick="getOriginal()">Restore original</button>
+                <button class="search Dividends" onclick="clearPortfolio()">Clear all</button>
+                <div class="helper"></div>
             </id>
             <div id="searchBox">
                 <input type="text" id="search" placeholder="Add tickers">
@@ -78,7 +78,6 @@
         </div>
         
     </div>
-    <script type="text/javascript" src="/node_modules/chart.js/dist/Chart.min.js"></script>
-<script src="chart.js"></script>
+    <script type="text/javascript" src="Chart.min.js"></script>
 </body>
 </html>
